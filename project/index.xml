@@ -5,24 +5,16 @@
     <link>/project/</link>
     <description>Recent content in Projects on Madelyn Oliveri</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>en-US</language>
-    <lastBuildDate>Tue, 01 Dec 2020 00:00:00 +0000</lastBuildDate><atom:link href="/project/index.xml" rel="self" type="application/rss+xml" />
+    <language>en-US</language><atom:link href="/project/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>Project 1</title>
+      <title>HW 1</title>
       <link>/project/project1/</link>
-      <pubDate>Tue, 01 Dec 2020 00:00:00 +0000</pubDate>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>/project/project1/</guid>
-      <description>  Test Project 1  </description>
-    </item>
-    
-    <item>
-      <title>Project 2</title>
-      <link>/project/project2/</link>
-      <pubDate>Tue, 01 Dec 2020 00:00:00 +0000</pubDate>
-      
-      <guid>/project/project2/</guid>
-      <description>  Test Project 2  </description>
+      <description>Enter your name and EID here This homework is due on Sep 6, 2020 at 11:59pm. Please submit as an HTML file on Canvas.
+For all questions, include the R commands/functions that you used to find your answer. Answers without supporting code will not receive credit.
+How to submit this assignment  All homework assignments will be completed using R Markdown. These .Rmd files consist of text/syntax (formatted using Markdown) alongside embedded R code.</description>
     </item>
     
   </channel>

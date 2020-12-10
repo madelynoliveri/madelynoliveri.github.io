@@ -7,7 +7,7 @@
     <meta name="author" content="Madelyn Oliveri" />
     
     <link rel="shortcut icon" type="image/x-icon" href="../../img/favicon.ico">
-    <title>Project 1</title>
+    <title>HW 1</title>
     <meta name="generator" content="Hugo 0.79.0" />
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="../../css/main.css" />
@@ -54,13 +54,13 @@
       <div class="container">
         <div class="blog-post">
           <h3>
-            <strong><a href="../../project/project1/">Project 1</a></strong>
+            <strong><a href="../../project/project1/">HW 1</a></strong>
           </h3>
         </div>
  
 <div class="blog-title">
           <h4>
-         December 1, 2020 
+         January 1, 0001 
             &nbsp;&nbsp;
             
           </h4>
@@ -74,8 +74,177 @@
 <script src="../../rmarkdown-libs/anchor-sections/anchor-sections.js"></script>
 
 
-<div id="test-project-1" class="section level2">
-<h2>Test Project 1</h2>
+<div id="enter-your-name-and-eid-here" class="section level4">
+<h4>Enter your name and EID here</h4>
+<p><strong>This homework is due on Sep 6, 2020 at 11:59pm. Please submit as an HTML file on Canvas.</strong></p>
+<p><em>For all questions, include the R commands/functions that you used to find your answer. Answers without supporting code will not receive credit.</em></p>
+<div id="how-to-submit-this-assignment" class="section level5">
+<h5>How to submit this assignment</h5>
+<blockquote>
+<p>All homework assignments will be completed using R Markdown. These <code>.Rmd</code> files consist of text/syntax (formatted using Markdown) alongside embedded R code. When you have completed the assignment (by adding R code inside codeblocks and supporting text outside codeblocks), create your document as follows:</p>
+</blockquote>
+<blockquote>
+<ul>
+<li>Click the &quot;Knit&quot; button (above)</li>
+<li>Fix any errors in your code, if applicable</li>
+<li>Upload the HTML file to Canvas</li>
+</ul>
+</blockquote>
+<hr />
+</div>
+</div>
+<div id="q1-1-pts" class="section level2">
+<h2>Q1 (1 pts)</h2>
+<div id="the-dataset-quakes-contains-information-about-earthquakes-occurring-near-fiji-since-1964.-the-first-few-observations-are-listed-below." class="section level5">
+<h5>The dataset <code>quakes</code> contains information about earthquakes occurring near Fiji since 1964. The first few observations are listed below.</h5>
+<pre class="r"><code>head(quakes)</code></pre>
+<pre><code>##      lat   long depth mag stations
+## 1 -20.42 181.62   562 4.8       41
+## 2 -20.62 181.03   650 4.2       15
+## 3 -26.00 184.10    42 5.4       43
+## 4 -17.97 181.66   626 4.1       19
+## 5 -20.42 181.96   649 4.0       11
+## 6 -19.68 184.31   195 4.0       12</code></pre>
+</div>
+<div id="how-many-observations-are-there-of-each-variable-i.e.-how-many-rows-are-there-show-using-code-how-many-variables-are-there-total-i.e.-how-many-columns-are-in-the-dataset-you-can-read-more-about-the-dataset-here-do-not-forget-to-include-the-code-you-used-to-find-the-answer-each-question" class="section level5">
+<h5>How many observations are there of each variable (i.e., how many rows are there; show using code)? How many variables are there total (i.e., how many columns are in the dataset)? You can read more about the dataset <a href="https://stat.ethz.ch/R-manual/R-patched/library/datasets/html/quakes.html">here</a> <em>Do not forget to include the code you used to find the answer each question</em></h5>
+<pre class="r"><code># your code here</code></pre>
+<p><em>Your typed answer goes here. 1-2 sentences only.</em></p>
+<hr />
+</div>
+</div>
+<div id="q2-2-pts" class="section level2">
+<h2>Q2 (2 pts)</h2>
+<div id="what-are-the-minimum-maximum-mean-and-median-values-for-the-variables-mag-and-depth-note-that-there-are-many-functions-that-can-be-used-to-answer-this-question.-if-you-chose-to-work-with-each-variable-separately-recall-that-you-can-access-individual-variables-in-a-dataframe-using-the-operator-e.g.-datasetvariable.-describe-your-answer-in-words." class="section level5">
+<h5>What are the minimum, maximum, mean, and median values for the variables <code>mag</code> and <code>depth</code>? Note that there are many functions that can be used to answer this question. If you chose to work with each variable separately, recall that you can access individual variables in a dataframe using the <code>$</code> operator (e.g., <code>dataset$variable</code>). Describe your answer in words.</h5>
+<pre class="r"><code># your code here</code></pre>
+<p><em>Your typed answer goes here. 1-2 sentences only.</em></p>
+<hr />
+</div>
+</div>
+<div id="q3" class="section level2">
+<h2>Q3</h2>
+<div id="recall-how-logical-indexing-of-a-dataframe-works-in-r.-to-refresh-your-memory-in-the-example-code-below-i-ask-r-for-the-median-magnitude-for-quakes-whose-longitude-is-greater-than-175.-the-two-ways-produce-equivalent-results." class="section level5">
+<h5>Recall how logical indexing of a dataframe works in R. To refresh your memory, in the example code below I ask R for the median magnitude for quakes whose longitude is greater than 175. The two ways produce equivalent results.</h5>
+<pre class="r"><code>median(quakes$mag[quakes$long &gt; 175])</code></pre>
+<pre><code>## [1] 4.5</code></pre>
+<pre class="r"><code>median(quakes[quakes$long &gt; 175, ]$mag)  #this is the more conventional notation</code></pre>
+<pre><code>## [1] 4.5</code></pre>
+</div>
+<div id="pt" class="section level3">
+<h3>3.1 (1 pt)</h3>
+<div id="explain-what-each-of-the-two-lines-of-code-are-doing-in-words.-specifically-why-do-we-need-to-use-the-comma-in-the-second-case-but-not-in-the-first-remember-that-the-selects-a-single-variable-and-that-are-used-for-indexing-whatever-object-came-before-either-a-single-variable-or-a-dataframe." class="section level5">
+<h5>Explain what each of the two lines of code are doing in words. Specifically, why do we need to use the comma in the second case but not in the first? Remember that the <code>$</code> selects a single variable and that <code>[ ]</code> are used for indexing whatever object came before (either a single variable or a dataframe).</h5>
+<p><em>Your answer goes here. 1-2 sentences only.</em></p>
+</div>
+</div>
+<div id="pts" class="section level3">
+<h3>3.2 (3 pts)</h3>
+<div id="what-is-the-mean-of-the-variable-mag-when-depth-is-greater-than-the-median-depth-what-is-the-mean-of-the-variable-mag-when-depth-is-less-than-the-median-depth-what-does-this-suggest-about-the-relationship-between-an-earthquakes-depth-and-its-magnitude" class="section level5">
+<h5>What is the mean of the variable <code>mag</code> when <code>depth</code> is <em>greater than</em> the median depth? What is the mean of the variable <code>mag</code> when <code>depth</code> is <em>less than</em> the median depth? What does this suggest about the relationship between an earthquake's depth and its magnitude?</h5>
+<pre class="r"><code># your code here</code></pre>
+<p><em>Your answer goes here. 1-2 sentences only.</em></p>
+</div>
+</div>
+<div id="pts-1" class="section level3">
+<h3>3.3 (2 pts)</h3>
+<div id="what-is-the-standard-deviation-of-the-variable-lat-when-depth-is-greater-than-the-median-depth-what-is-the-standard-deviation-of-the-variable-lat-when-depth-is-less-than-the-median-depth-what-does-this-suggest-about-the-relationship-between-an-earthquakes-latitude-and-its-depth" class="section level5">
+<h5>What is the standard deviation of the variable <code>lat</code> when <code>depth</code> is <em>greater than</em> the median depth? What is the standard deviation of the variable <code>lat</code> when <code>depth</code> is <em>less than</em> the median depth? What does this suggest about the relationship between an earthquake's latitude and its depth?</h5>
+<pre class="r"><code># your code here</code></pre>
+<p><em>Your answer goes here. 1-2 sentences only.</em></p>
+<hr />
+</div>
+</div>
+</div>
+<div id="q4-2-pts" class="section level2">
+<h2>Q4 (2 pts)</h2>
+<div id="the-variable-depth-is-measured-in-kilometers.-create-a-new-variable-called-depth_m-that-gives-depth-in-meters-rather-than-kilometers-and-add-it-to-the-dataset-quakes.-to-help-get-you-started-i-have-given-you-code-that-creates-the-new-variable-but-fills-it-with-na-values.-overwrite-the-nas-below-by-writing-code-on-the-left-hand-side-of-the-assignment-operator---that-computes-the-requested-transformation.-print-out-the-first-few-rows-of-the-updated-dataset-using-head." class="section level5">
+<h5>The variable <code>depth</code> is measured in kilometers. Create a new variable called <code>depth_m</code> that gives depth <strong>in meters rather than kilometers</strong> and add it to the dataset <code>quakes</code>. To help get you started, I have given you code that creates the new variable but fills it with <code>NA</code> values. Overwrite the <code>NA</code>s below by writing code on the left-hand side of the assignment operator (<code>&lt;-</code>) that computes the requested transformation. Print out the first few rows of the updated dataset using <code>head()</code>.</h5>
+<pre class="r"><code># update the code below by replacing the NA with
+# the correct expression to convert to meters
+quakes$depth_m &lt;- NA</code></pre>
+</div>
+</div>
+<div id="q5" class="section level2">
+<h2>Q5</h2>
+<div id="lets-make-some-plots-in-base-r." class="section level5">
+<h5>Let's make some plots in base R.</h5>
+</div>
+<div id="pt-1" class="section level3">
+<h3>5.1 (2 pt)</h3>
+<div id="create-a-boxplot-of-depth-using-the-boxplot-function.-describe-where-you-see-the-min-max-and-median-which-you-calculated-in-question-2-in-this-plot." class="section level5">
+<h5>Create a boxplot of <code>depth</code> using the <code>boxplot()</code> function. Describe where you see the min, max, and median (which you calculated in question 2) in this plot.</h5>
+<pre class="r"><code># your code here</code></pre>
+<p><em>Your answer goes here. 1-2 sentences only.</em></p>
+</div>
+</div>
+<div id="pt-2" class="section level3">
+<h3>5.2 (2 pt)</h3>
+<div id="create-a-histogram-of-depth-using-the-hist-function.-what-important-information-does-the-histogram-provide-that-the-boxplot-does-not" class="section level5">
+<h5>Create a histogram of <code>depth</code> using the <code>hist()</code> function. What important information does the histogram provide that the boxplot does not?</h5>
+<pre class="r"><code># your code here</code></pre>
+<p><em>Your answer goes here. 1-2 sentences only.</em></p>
+</div>
+</div>
+<div id="pt-3" class="section level3">
+<h3>5.3 (2 pt)</h3>
+<div id="create-a-scatterplot-by-plotting-variables-mag-and-stations-against-each-other-using-the-plot-function.-note-that-to-generate-a-scatterplot-the-plot-takes-two-arguments-the-x-axis-variable-and-the-y-axis-variable.-describe-the-relationship-between-the-two-variables." class="section level5">
+<h5>Create a scatterplot by plotting variables <code>mag</code> and <code>stations</code> against each other using the <code>plot()</code> function. Note that to generate a scatterplot, the <code>plot()</code> takes two arguments: the x-axis variable and the y-axis variable. Describe the relationship between the two variables.</h5>
+<pre class="r"><code># your code here</code></pre>
+<p><em>Your answer goes here. 1-2 sentences only.</em></p>
+</div>
+</div>
+<div id="pt-4" class="section level3">
+<h3>5.4 (3 pt)</h3>
+<div id="create-scatterplot-of-the-quakes-geographic-locations-by-plotting-long-on-the-x-axis-and-lat-on-the-y-axis.-using-this-plot-and-the-maplink-below-note-the-two-trenches-and-some-of-the-techniques-you-practiced-above-are-deeper-quakes-more-likely-to-originate-east-or-west-of-fiji" class="section level5">
+<h5>Create scatterplot of the quakes' geographic locations by plotting <code>long</code> on the x-axis and <code>lat</code> on the y-axis. Using this plot, and the map/link below (note the two trenches), and some of the techniques you practiced above, are deeper quakes more likely to originate east or west of Fiji?</h5>
+<p><img src="http://valorielord.com/default/cache/file/D4256462-E44C-32F4-62C9A3C4AA762918_bodyimage.png" /> <a href="https://www.google.com/maps/@-20.1679389,175.7587479,3513560m/data=!3m1!1e3">Link to location on Google maps</a></p>
+<pre class="r"><code># your code here</code></pre>
+<p><em>Your answer goes here. 1-2 sentences only.</em></p>
+<hr />
+<pre><code>## R version 3.6.1 (2019-07-05)
+## Platform: x86_64-pc-linux-gnu (64-bit)
+## Running under: Ubuntu 18.04.5 LTS
+## 
+## Matrix products: default
+## BLAS:   /stor/system/opt/R/R-3.6.1/lib/R/lib/libRblas.so
+## LAPACK: /stor/system/opt/R/R-3.6.1/lib/R/lib/libRlapack.so
+## 
+## locale:
+##  [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
+##  [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    
+##  [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=en_US.UTF-8   
+##  [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 
+##  [9] LC_ADDRESS=C               LC_TELEPHONE=C            
+## [11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
+## 
+## attached base packages:
+## [1] stats     graphics  grDevices utils     datasets  methods   base     
+## 
+## loaded via a namespace (and not attached):
+##  [1] compiler_3.6.1  magrittr_1.5    bookdown_0.20   formatR_1.7    
+##  [5] tools_3.6.1     htmltools_0.5.0 yaml_2.2.1      stringi_1.5.3  
+##  [9] rmarkdown_2.5   blogdown_0.20   knitr_1.29      stringr_1.4.0  
+## [13] digest_0.6.25   xfun_0.19       rlang_0.4.7     evaluate_0.14</code></pre>
+<pre><code>## [1] &quot;2020-12-10 11:49:59 CST&quot;</code></pre>
+<pre><code>##                                       sysname 
+##                                       &quot;Linux&quot; 
+##                                       release 
+##                          &quot;4.15.0-117-generic&quot; 
+##                                       version 
+## &quot;#118-Ubuntu SMP Fri Sep 4 20:02:41 UTC 2020&quot; 
+##                                      nodename 
+##                  &quot;educcomp01.ccbb.utexas.edu&quot; 
+##                                       machine 
+##                                      &quot;x86_64&quot; 
+##                                         login 
+##                                     &quot;unknown&quot; 
+##                                          user 
+##                                      &quot;mmo698&quot; 
+##                                effective_user 
+##                                      &quot;mmo698&quot;</code></pre>
+</div>
+</div>
 </div>
 
             
