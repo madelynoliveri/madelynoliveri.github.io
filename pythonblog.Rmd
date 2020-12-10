@@ -1,0 +1,15 @@
+---
+title: Python Blog
+author: Madelyn Oliveri
+date: '2020-12-09'
+slug: pythonblog
+categories: []
+tags: []
+description: 'A recap of recently learned Python code and Python/R communication techniques.'
+---
+
+
+Although I've struggled quite a bit with program language used for coding due to its complexity, I find comfort in knowing I have the ability to fact-check data or even create my own datasets for research. 
+
+
+Recently in class, we have been using Python to explore essential packages such as numpy and pandas. Numpy is a Python library helpful for working with arrays. In particular, we worked 
