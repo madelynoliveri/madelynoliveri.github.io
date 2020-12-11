@@ -8,7 +8,7 @@ tags: []
 categories: []
 ---
 
-![](/post/pythonblog_files/snake.jpg){width=50% height=50%}
+![](/post/pythonblog_files/snake.jpg)
 
 
 Recently in class, we have been using Python to explore essential packages and functions that assist in the ease of data manipulation. My personal favorite has been Reguar Expression operations. RegEx helps to learn how to match, search, and transform a string. Let's look at a few examples!
@@ -25,7 +25,7 @@ Now! let's backtrack a little bit by starting with reticulate and *then* getting
 
 **1. RETICULATE**
 
-Reticulate preps us for the use of R and Python. Let's do a very simple demonstration of using an R dataset with python functions and then vice versa; a python dataset with R functions
+Reticulate preps us for the use of R and Python. The key is to switch "{R}" with "{python}". Let's do a very simple demonstration of using an R dataset with python functions. 
 ```{R}
 library(reticulate) 
 
@@ -39,6 +39,7 @@ np.mean(r.quakes[r.quakes.mag>5].depth)
 ```
 
 The smallest depth with a magnitude greater than five is 40 km. Compared to the avergae depth of 250 km when magnitude is greater than five, there's a pretty big difference. Thanks NumPy!
+
 
 **2. Regular Expression Operations**
 
