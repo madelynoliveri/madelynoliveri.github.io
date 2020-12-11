@@ -8,38 +8,43 @@ tags: []
 categories: []
 ---
 
-![](/post/pythonblog_files/snake.jpg) 
-``
+![](/post/pythonblog_files/snake.jpg){width=70% height=60%}
 
 
-Recently in class, we have been using Python to explore essential packages such as NumPy and Pandas. Numpy is a Python library tailored more for numeric data -specifically the manipuation of arrays - and Pandas is a Python library helpful with tabular data; like columns or rows of numbers. 
-
-
-
-Additionally, we've utilized Reguar Expression operations in helping to learn how to match, search, and transform a string. Let's look at a few examples!
+Recently in class, we have been using Python to explore essential packages and functions that assist in the ease of date manipulation. My personal favorite has been Reguar Expression operations. RegEx helps to learn how to match, search, and transform a string. Let's look at a few examples!
 
 
 Wait wait wait. We've already encountered our first problem. How can I show you Python coding if I'm using R? I know you were panicking, but have no fear! Technology is here!
 
 
-R and Python can talk to each other with **reticulate**! Think of it as combining two brains. The brains have two different ways of thinking, two different ways of processing their thoughts, and two different special talents that make them unique. When you combine these two brains, you get a... MEGAMIND. (*insert evil laugh here*) 
+R and Python can talk to each other with **reticulate**! Think of it as combining two brains. These brains have two different ways of thinking, two different ways of processing their thoughts, and two different special talents that make them unique. When you combine these two brains, you get a... MEGAMIND. (*insert evil laugh here*) 
 
 
-Now! let's backtrack a little bit by starting with reticulate and *then* getting into some examples of Numpy, Pandas, and a few Regular Expression operations. 
+Now! let's backtrack a little bit by starting with reticulate and *then* getting into Regular Expression operations. 
 
 
 **1. RETICULATE**
+Reticulate preps us for the use of R and Python. Let's do a very simple demonstration of using an R dataset with python functions and then vice versa; a python dataset with R functions
 ```{R}
 library(reticulate) 
 
+quakes <- quakes #R dataset
 ```
 
+```{python}
+import numpy as np #python functions
+np.min(r.quakes[r.quakes.mag>5].depth) 
+np.mean(r.quakes[r.quakes.mag>5].depth)
+```
 
-**3. Regular Expression Operations**
+The smallest depth with a magnitude greater than five is 40 km. Compared to the avergae depth of 250 km when magnitude is greater than five, there's a pretty big difference!
 
-Here is a string I have created. It's a bunch of nonsense. Much like the 'Ctrl f' function on your keyboard when you're quickly searching for keywords, regular expressions can help us skip the said nonsense and find what we're looking for. 
+**2. Regular Expression Operations**
+
+Here is a string I have created. It's a bunch of nonsense. Much like the 'Ctrl f' function on your keyboard when you're quickly searching for keywords, regular expressions can help us skip said nonsense and find what we're looking for. 
 
 In this case, lets extract any numbers.
+
 ```{python}
 import re
 
@@ -49,6 +54,10 @@ extract = re.findall(r'\d+', string1)
 print(extract)
 ```
 
-So what just happened? Simply, d = numeric values [0-9] and the plus sign indicates 
+So what just happened? Simply, d = numeric values [0-9] and the plus sign indicates one or more occurences. Here's a cheat sheet to practice more tasks!
+
+<center>![](/post/pythonblog_files/regex.jpg){width=50% height=50%}<center>
+
+Hopefully this was a good glimpse into what communitcation between R and Python can do for us! 
  
-![](/post/pythonblog_files/regex.jpg)
+

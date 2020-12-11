@@ -13,9 +13,8 @@
       <pubDate>Wed, 09 Dec 2020 00:00:00 +0000</pubDate>
       
       <guid>/post/2020/12/09/pythonblog/</guid>
-      <description>``
-Recently in class, we have been using Python to explore essential packages such as NumPy and Pandas. Numpy is a Python library tailored more for numeric data -specifically the manipuation of arrays - and Pandas is a Python library helpful with tabular data; like columns or rows of numbers.
-Additionally, we&#39;ve utilized Reguar Expression operations in helping to learn how to match, search, and transform a string. Let&#39;s look at a few examples!</description>
+      <description>Recently in class, we have been using Python to explore essential packages and functions that assist in the ease of date manipulation. My personal favorite has been Reguar Expression operations. RegEx helps to learn how to match, search, and transform a string. Let&#39;s look at a few examples!
+Wait wait wait. We&#39;ve already encountered our first problem. How can I show you Python coding if I&#39;m using R?</description>
     </item>
     
   </channel>

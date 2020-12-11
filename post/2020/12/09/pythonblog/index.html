@@ -74,16 +74,26 @@
 <script src="../../../../../rmarkdown-libs/anchor-sections/anchor-sections.js"></script>
 
 
-<p><img src="../../../../../post/pythonblog_files/snake.jpg" /> ``</p>
-<p>Recently in class, we have been using Python to explore essential packages such as NumPy and Pandas. Numpy is a Python library tailored more for numeric data -specifically the manipuation of arrays - and Pandas is a Python library helpful with tabular data; like columns or rows of numbers.</p>
-<p>Additionally, we've utilized Reguar Expression operations in helping to learn how to match, search, and transform a string. Let's look at a few examples!</p>
+<div class="figure">
+<img src="../../../../../post/pythonblog_files/snake.jpg" style="width:70.0%" style="height:60.0%" />
+
+</div>
+<p>Recently in class, we have been using Python to explore essential packages and functions that assist in the ease of date manipulation. My personal favorite has been Reguar Expression operations. RegEx helps to learn how to match, search, and transform a string. Let's look at a few examples!</p>
 <p>Wait wait wait. We've already encountered our first problem. How can I show you Python coding if I'm using R? I know you were panicking, but have no fear! Technology is here!</p>
-<p>R and Python can talk to each other with <strong>reticulate</strong>! Think of it as combining two brains. The brains have two different ways of thinking, two different ways of processing their thoughts, and two different special talents that make them unique. When you combine these two brains, you get a... MEGAMIND. (<em>insert evil laugh here</em>)</p>
-<p>Now! let's backtrack a little bit by starting with reticulate and <em>then</em> getting into some examples of Numpy, Pandas, and a few Regular Expression operations.</p>
-<p><strong>1. RETICULATE</strong></p>
-<pre class="r"><code>library(reticulate) </code></pre>
-<p><strong>3. Regular Expression Operations</strong></p>
-<p>Here is a string I have created. It's a bunch of nonsense. Much like the 'Ctrl f' function on your keyboard when you're quickly searching for keywords, regular expressions can help us skip the said nonsense and find what we're looking for.</p>
+<p>R and Python can talk to each other with <strong>reticulate</strong>! Think of it as combining two brains. These brains have two different ways of thinking, two different ways of processing their thoughts, and two different special talents that make them unique. When you combine these two brains, you get a... MEGAMIND. (<em>insert evil laugh here</em>)</p>
+<p>Now! let's backtrack a little bit by starting with reticulate and <em>then</em> getting into Regular Expression operations.</p>
+<p><strong>1. RETICULATE</strong> Reticulate preps us for the use of R and Python. Let's do a very simple demonstration of using an R dataset with python functions and then vice versa; a python dataset with R functions</p>
+<pre class="r"><code>library(reticulate) 
+
+quakes &lt;- quakes #R dataset</code></pre>
+<pre class="python"><code>import numpy as np #python functions
+np.min(r.quakes[r.quakes.mag&gt;5].depth) </code></pre>
+<pre><code>## 40</code></pre>
+<pre class="python"><code>np.mean(r.quakes[r.quakes.mag&gt;5].depth)</code></pre>
+<pre><code>## 249.93377483443709</code></pre>
+<p>The smallest depth with a magnitude greater than five is 40 km. Compared to the avergae depth of 250 km when magnitude is greater than five, there's a pretty big difference!</p>
+<p><strong>2. Regular Expression Operations</strong></p>
+<p>Here is a string I have created. It's a bunch of nonsense. Much like the 'Ctrl f' function on your keyboard when you're quickly searching for keywords, regular expressions can help us skip said nonsense and find what we're looking for.</p>
 <p>In this case, lets extract any numbers.</p>
 <pre class="python"><code>import re
 
@@ -92,11 +102,11 @@ string1=&quot;Is it weird the numbers that we remember in life that take up our 
 extract = re.findall(r&#39;\d+&#39;, string1) 
 print(extract)</code></pre>
 <pre><code>## [&#39;129780&#39;, &#39;4011&#39;]</code></pre>
-<p>So what just happened? Simply, d = numeric values [0-9] and the plus sign indicates</p>
-<div class="figure">
-<img src="../../../../../post/pythonblog_files/regex.jpg" />
-
-</div>
+<p>So what just happened? Simply, d = numeric values [0-9] and the plus sign indicates one or more occurences. Here's a cheat sheet to practice more tasks!</p>
+<center>
+<img src="../../../../../post/pythonblog_files/regex.jpg" style="width:50.0%" style="height:50.0%" />
+<center>
+<p>Hopefully this was a good glimpse into what communitcation between R and Python can do for us!</p>
 
             
         <hr>         <div class="related-posts">
