@@ -8,7 +8,7 @@ tags: []
 categories: []
 ---
 
-![](/post/pythonblog_files/snake.jpg)
+![](/post/pythonblog_files/snake.jpg){width=50% heigt=50%}
 
 
 Recently in class, we have been using Python to explore essential packages and functions that assist in the ease of data manipulation. My personal favorite has been Reguar Expression operations. RegEx helps to learn how to match, search, and transform a string. Let's look at a few examples!
