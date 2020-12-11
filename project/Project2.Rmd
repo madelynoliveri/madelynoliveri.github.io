@@ -1,0 +1,290 @@
+---
+title: "Project 2"
+author: "SDS348 Fall 2020"
+date: "`November 25, 2020"
+output:
+  html_document:
+    toc: true
+    toc_float:
+      collapsed: false
+---
+
+```{r global_options, include=FALSE}
+#DO NOT EDIT THIS CHUNK OR ANYTHING ABOVE IT!
+knitr::opts_chunk$set(echo = TRUE, eval = TRUE, fig.align = "center", warning = F, message = F, tidy=T, tidy.opts=list(width.cutoff=50), R.options=list(max.print=100,dplyr.print_max=100))
+```
+
+This dataset of 75 observations contains information to study any potential correlations or predictors of relationships between salary, educational background degree type, etc. There are many factors that influence salaries and degrees obtained such as experience, opportunity, family operations, business owner status, future goals, etc., but comparisons between this smaller set of variables may provide some type of trend and clarity on the relationships. The variables are as follows:
+
+Salary: A numeric variable of individual salaries
+
+Degree: A categorical variable describing the highest level of education (GED/high school diploma, associates degree, bachelor's degree, masters, and doctoral)
+
+Age: Both men and women between the ages of 21 and 75
+
+GPA: Highest educational GPA between 2.0 and 4.0; used to predict future success (success defined by salary, income satisfaction, etc.)
+
+Satisfaction: A yes or no questions regarding if the individual is happy with their current success (income)
+
+```{R}
+library(tidyverse)
+library(dplyr)
+library(ggplot2)
+library(readxl)
+
+library(readr)
+
+testing <- read_csv("project2data.csv", col_types = cols(Age = col_number(), GPA = col_number(), Salary = col_number()))
+```
+
+```{R}
+#MANOVA test
+man1 <- manova(cbind(Age, GPA, Salary) ~ Degree, data = testing)
+summary(man1)
+```
+
+```{R}
+# ANOVA
+summary.aov(man1)
+```
+
+```{R}
+testing %>% group_by(Degree) %>% summarize(mean(Age), mean(GPA), 
+    mean(Salary))
+```
+
+```{R}
+pairwise.t.test(testing$Age, testing$Degree, p.adj = "none")
+```
+
+```{R}
+pairwise.t.test(testing$Salary, testing$Degree, p.adj = "none")
+```
+
+```{R}
+# MANOVA assumptions
+library(rstatix)
+group <- testing$Degree
+DVs <- testing %>% select(Salary, Age, GPA)
+
+# Test multivariate normality for each group (null:
+# assumption met)
+sapply(split(DVs, group), mshapiro_test)
+```
+A one-way MANOVA was conducted to determine the effect of the Degree obtained on three dependent variables (age, salary, and GPA). Significant differences were found among the five degree types for at least one of the dependent variables, leading to the use of ANOVA tests. (Pillai trace = 0.64208, pseudo F(12, 210) = 4.77 p < 0.0001)
+
+Three univariate ANOVAs were conducted. Before any corrections were made, only salary and age appear to be significant, but not GPA. After bonferroni corrections, (alpha = .05/5 = .01), the same outcomes are still true. For age: F(4,70) = 3.68 p<0.01 and for salary: F(4,70) = 22.179 p<0.001
+
+The probability of a type 1 error is: 1-.95^5 = 0.226.
+
+Post hoc analysis was performed conducting pairwise comparisons to determine which type of degree differed by factors of age and salary. After making adjustments with bonferroni (alpha = 0.05/24 = 0.002), it is clear that there are not many significant values in age or salary. This may mean that the variables do not differ greatly.
+
+MANOVA assumptions are not likely to have been met because some values are less than 0.05 which means an assumption was violated.
+
+```{R}
+# chi-squared, randomization test
+testing$salary_group <- ifelse(testing$Salary < median(testing$Salary), 
+    "small", "big")
+table(testing$Degree, testing$Salary)
+```
+
+```{R}
+# visualization of contingency table
+library(ggplot2)
+ggplot(testing) + aes(x = Degree, fill = salary_group) + geom_bar() + 
+    scale_fill_hue() + theme_minimal() + labs(title = "Distribution of Salaries by Type of Degree", 
+    subtitle = "Chi-Squared Test", caption = "Test Statistics: X-squared = 29.184, df = 4, p-value = 7.172e-06")
+```
+
+```{R}
+# chi-squared test
+chisq <- chisq.test(testing$Degree, testing$Salary)
+chisq
+```
+The p-value (7.172e-06) is less than the significance level of 0.05 so we can reject the null hypothesis and conclude that there is an association. This is interesting because previously, in the MANOVA/ANOVA section, we didn’t see much significance with adjustments made, but when grouping salaries into “big or “small” based on median salary ($74,500), there is a more noticeable association between degree type and salary. This could be because salaries are skewed since there is such a great range. The data shows that more people receive a “big” salary with a masters or doctoral degree. And most people receive a “small” salary with an associates and GED. A bachelor’s degree receives almost equal salary groups while a doctoral degree does not have any “small” salaries.
+
+```{R}
+# mean-centered variables for linear regression
+
+data.frame(Salary_c = testing$Salary - mean(testing$Salary))
+```
+
+```{R}
+testing$Salary_c <- testing$Salary - mean(testing$Salary)
+
+# dummy variables
+testing$Satisfaction <- factor(testing$Satisfaction, labels = c("No", 
+    "Yes"))
+testing$Satisfaction <- factor(testing$Satisfaction, levels = c("Yes", 
+    "No"))
+
+# regression test on Satisfaction to see if dummy variables
+# are working
+fit <- lm(Salary ~ Satisfaction, data = testing)
+summary(fit)
+```
+
+```{R}
+# assumptions (linearity, homoskedacity)
+
+# could be more variance present
+resids <- lm(Salary ~ Age, data = testing)$residuals
+fitted <- lm(Salary ~ Age, data = testing)$fitted.values
+
+
+ggplot() + geom_histogram(aes(resids), bins = 25)
+```
+
+```{R}
+ggplot() + geom_point(aes(fitted, resids)) + geom_hline(yintercept = 0, 
+    color = "red")
+```
+The data is mostly normally distributed, except the few outliers. It looks worse because it is not enlarged. Data should be fore fanned out.
+
+```{R}
+# assumptions(normality)
+shapiro.test(resids)
+```
+
+
+```{R}
+# looks ok
+
+# multiple linear regression model
+fit2 <- lm(Salary ~ Age + Satisfaction, data = testing)
+summary(fit2)
+```
+
+```{R}
+library(ggplot2)
+ggplot(testing, aes(x = Salary, y = Age, group = Satisfaction)) + 
+    geom_point(aes(color = Satisfaction)) + geom_smooth(method = "lm", 
+    formula = y ~ 1, se = F, fullrange = T, aes(color = Satisfaction)) + 
+    theme(legend.position = c(0.9, 0.19)) + xlab("")
+```
+23% of variability in Salary is explained. Both p-values are less than their significant codes. Controlling for Satisfaction status, there is a significant effect of age on income, t=3.83, df = 72, p<.001. After controlling for age, there is no difference in satisfaction between those who said yes and those who said no.
+
+```{R}
+library(sandwich)
+library(lmtest)
+
+# robust standard errors
+
+robust <- lm(Salary ~ Age + Satisfaction, data = testing)
+summary(robust)
+```
+
+```{R}
+bptest(robust)  #H0: homoskedastic
+```
+
+```{R}
+# uncorrected/before robust SEs
+summary(robust)$coef[, 1:2]
+```
+
+```{R}
+# corrected/robust SEs
+coeftest(robust, vcov = vcovHC(robust))[, 1:2]
+```
+
+The bptest is showing a p-value almost equivalent to 0.05. But for this case, we can reject the null that the variance of the residuals is constant, thus heteroskedacity is present. With robust standard errors, the standard error increased in age and decreased in satisfaction:no
+
+```{R}
+library(dplyr)
+library(sandwich)
+
+# uncorrected/before robust SEs
+summary(fit2)$coef[, 1:2]
+```
+
+```{R}
+# corrected/robust SEs
+coeftest(fit2, vcov = vcovHC(fit2))[, 1:2]
+```
+
+```{R}
+# bootstrapping
+library(dplyr)
+boot_dat <- sample_frac(testing, replace = T)
+samp_distn <- replicate(5000, {
+    boot_dat <- sample_frac(testing, replace = T)
+    boots <- lm(Salary ~ Age + Satisfaction, data = boot_dat)
+    coef(boots)
+})
+samp_distn %>% t %>% as.data.frame %>% summarize_all(sd)
+```
+
+```{R}
+library(tidyverse)
+library(lmtest)
+
+# create a binary categorical variable
+data <- testing %>% mutate(y = ifelse(Satisfaction == "yes", 
+    1, 0))
+
+# logistic regression model
+logistic <- glm(y ~ Age + Degree, family = "binomial", data = data)
+coeftest(logistic)
+```
+
+confusion matrix ran yesterday but not today, luckily savedmy calculations though.
+ 
+accuracy (38+10)/75 sensitivity 38/46 = 0.826
+
+specificity 10/29 = 0.345
+
+precision 38/57 = 0.67
+
+Robust data shows the greatest standard error. There is likely less variation and more accuracy in the bootstrapped data.
+
+For Salary = 0, log odds is -2.6e+01, odds of income disatisfaction is e^-2.6e+01 = 0.0023. For Salary = 1, log odds is (-2.6e+01)-(6.2668e-20)=-3.1, Odds is e^-3.1= 0.045. Every one unit increase in Salary multiplies odds by e^-6.2668e-20 = 8.2e-17. Odds of Satisatisfaction decreases 310% for every additional Salary.
+
+For Age = 0, log odds is -2.6e+01, odds of income disatisfaction is e^-2.6e+01 = 0.002. For Age = 1, log odds is (-2.6e+01)+(7.9237e-16)=-0.52, Odds is e^-0.52 = 0.594. Every one unit increase in Age multiplies odds by e^7.9237e-16 = 254.
+
+```{R}
+# create a binary categorical variable
+data <- testing %>% mutate(y = ifelse(Satisfaction == "yes", 
+    1, 0))
+
+# logistic regression model for all variables
+logistic2 <- glm(y ~ Age + Degree + Salary + GPA, family = "binomial", 
+    data = data)
+coeftest(logistic2)
+```
+
+```{R}
+exp(coef(logistic2))
+```
+
+Controlling for Salary, GPA, and Age, all degrees have significantly higher odds of satisfaction, except for GED. Controlling for Salary, GPA, and Degree; a significant negative impact on odds of satisfaction is indicated for age. Controlling for Age, Salary, Degree; a significant negative impact on odds of Satisfaction is indicated for GPA. Controlling for Age, GPA, Degree; a significant negative impact on odds of Satisfaction is indicated for Salary.
+
+```{R}
+library(Matrix)
+library(glmnet)
+y <- as.matrix(testing$Satisfaction)  #grab response
+x <- model.matrix(Satisfaction ~ ., data = testing)[, -1]  #grab predictors
+
+x <- scale(x)
+
+cv <- cv.glmnet(x, y, family = "binomial")  #picks an optimal value for lambda through 10-fo
+
+cv <- cv.glmnet(x, y, family = "binomial")
+lasso <- glmnet(x, y, family = "binomial", lambda = cv$lambda.1se)
+coef(lasso)
+```
+Salary is retained
+
+```{R}
+probs <- predict(logistic2, type = "response")
+table(predict = as.numeric(probs > 0.5), truth = data$y) %>% 
+    addmargins  #notrunning correctly
+```
+A lot of my data would not knit and I was unable to solve the errors. Overall, this was turned out to be a crappy dataset from the outcomes and interpretations produced.
+
+```{R, echo=F}
+## DO NOT DELETE THIS BLOCK!
+sessionInfo()
+Sys.time()
+Sys.info()
+```
