@@ -201,7 +201,7 @@ ggplot(testing) + aes(x = Degree, fill = salary_group) +
     geom_bar() + scale_fill_hue() + theme_minimal() + 
     labs(title = &quot;Distribution of Salaries by Type of Degree&quot;, 
         subtitle = &quot;Chi-Squared Test&quot;, caption = &quot;Test Statistics: X-squared = 29.184, df = 4, p-value = 7.172e-06&quot;)</code></pre>
-<p><img src="../../project/Project2_files/figure-html/unnamed-chunk-9-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="../../project/project2_files/figure-html/unnamed-chunk-9-1.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code># chi-squared test
 chisq &lt;- chisq.test(testing$Degree, testing$Salary)
 chisq</code></pre>
@@ -328,10 +328,10 @@ fitted &lt;- lm(Salary ~ Age, data = testing)$fitted.values
 
 
 ggplot() + geom_histogram(aes(resids), bins = 25)</code></pre>
-<p><img src="../../project/Project2_files/figure-html/unnamed-chunk-13-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="../../project/project2_files/figure-html/unnamed-chunk-13-1.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>ggplot() + geom_point(aes(fitted, resids)) + geom_hline(yintercept = 0, 
     color = &quot;red&quot;)</code></pre>
-<p><img src="../../project/Project2_files/figure-html/unnamed-chunk-14-1.png" width="672" style="display: block; margin: auto;" /> The data is mostly normally distributed, except the few outliers. It looks worse because it is not enlarged. Data should be fore fanned out.</p>
+<p><img src="../../project/project2_files/figure-html/unnamed-chunk-14-1.png" width="672" style="display: block; margin: auto;" /> The data is mostly normally distributed, except the few outliers. It looks worse because it is not enlarged. Data should be fore fanned out.</p>
 <pre class="r"><code># assumptions(normality)
 shapiro.test(resids)</code></pre>
 <pre><code>## 
@@ -368,7 +368,7 @@ ggplot(testing, aes(x = Salary, y = Age, group = Satisfaction)) +
     geom_point(aes(color = Satisfaction)) + geom_smooth(method = &quot;lm&quot;, 
     formula = y ~ 1, se = F, fullrange = T, aes(color = Satisfaction)) + 
     theme(legend.position = c(0.9, 0.19)) + xlab(&quot;&quot;)</code></pre>
-<p><img src="../../project/Project2_files/figure-html/unnamed-chunk-17-1.png" width="672" style="display: block; margin: auto;" /> 23% of variability in Salary is explained. Both p-values are less than their significant codes. Controlling for Satisfaction status, there is a significant effect of age on income, t=3.83, df = 72, p&lt;.001. After controlling for age, there is no difference in satisfaction between those who said yes and those who said no.</p>
+<p><img src="../../project/project2_files/figure-html/unnamed-chunk-17-1.png" width="672" style="display: block; margin: auto;" /> 23% of variability in Salary is explained. Both p-values are less than their significant codes. Controlling for Satisfaction status, there is a significant effect of age on income, t=3.83, df = 72, p&lt;.001. After controlling for age, there is no difference in satisfaction between those who said yes and those who said no.</p>
 <pre class="r"><code>library(sandwich)
 library(lmtest)
 
@@ -438,8 +438,8 @@ samp_distn &lt;- replicate(5000, {
     coef(boots)
 })
 samp_distn %&gt;% t %&gt;% as.data.frame %&gt;% summarize_all(sd)</code></pre>
-<pre><code>##   (Intercept)     Age SatisfactionNo
-## 1    27458.89 689.149       11775.22</code></pre>
+<pre><code>##   (Intercept)      Age SatisfactionNo
+## 1    27426.78 684.4216       12014.25</code></pre>
 <pre class="r"><code>library(tidyverse)
 library(lmtest)
 
@@ -573,7 +573,7 @@ table(predict = as.numeric(probs &gt; 0.5), truth = data$y) %&gt;%
 ## [65] knitr_1.29        utf8_1.1.4        shape_1.4.5       stringi_1.5.3    
 ## [69] Rcpp_1.0.5        vctrs_0.3.2       dbplyr_1.4.4      tidyselect_1.1.0 
 ## [73] xfun_0.19</code></pre>
-<pre><code>## [1] &quot;2020-12-11 12:58:10 CST&quot;</code></pre>
+<pre><code>## [1] &quot;2020-12-11 13:05:47 CST&quot;</code></pre>
 <pre><code>##                                       sysname 
 ##                                       &quot;Linux&quot; 
 ##                                       release 
