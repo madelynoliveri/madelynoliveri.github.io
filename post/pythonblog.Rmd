@@ -1,5 +1,5 @@
 ---
-title: "Don't mess with the Python"
+title: "Don't Mess with the Python"
 author: "Madelyn Oliveri"
 date: '2020-12-09'
 description: A recap of recently learned Python/R communication and coding techniques.
@@ -8,13 +8,13 @@ tags: []
 categories: []
 ---
 
-![](/post/pythonblog_files/snake.jpg){width=70% height=60%}
+![](/post/pythonblog_files/snake.jpg){width=50% height=50%}
 
 
-Recently in class, we have been using Python to explore essential packages and functions that assist in the ease of date manipulation. My personal favorite has been Reguar Expression operations. RegEx helps to learn how to match, search, and transform a string. Let's look at a few examples!
+Recently in class, we have been using Python to explore essential packages and functions that assist in the ease of data manipulation. My personal favorite has been Reguar Expression operations. RegEx helps to learn how to match, search, and transform a string. Let's look at a few examples!
 
 
-Wait wait wait. We've already encountered our first problem. How can I show you Python coding if I'm using R? I know you were panicking, but have no fear! Technology is here!
+Wait wait wait. We've already encountered our first problem. How can I show you Python coding if I'm using R to build this website? I know you were panicking, but have no fear! Technology is here!
 
 
 R and Python can talk to each other with **reticulate**! Think of it as combining two brains. These brains have two different ways of thinking, two different ways of processing their thoughts, and two different special talents that make them unique. When you combine these two brains, you get a... MEGAMIND. (*insert evil laugh here*) 
@@ -37,7 +37,7 @@ np.min(r.quakes[r.quakes.mag>5].depth)
 np.mean(r.quakes[r.quakes.mag>5].depth)
 ```
 
-The smallest depth with a magnitude greater than five is 40 km. Compared to the avergae depth of 250 km when magnitude is greater than five, there's a pretty big difference!
+The smallest depth with a magnitude greater than five is 40 km. Compared to the avergae depth of 250 km when magnitude is greater than five, there's a pretty big difference. Thanks NumPy!
 
 **2. Regular Expression Operations**
 
@@ -48,7 +48,7 @@ In this case, lets extract any numbers.
 ```{python}
 import re
 
-string1="Is it weird the numbers that we remember in life that take up our brain space and yet are no longer needed? My lunch number in elementary school was 129780. Cool. What am I gonna do with that now? Or the sticker on the banana that shows the produce code at grocery stores is usually #4011. Again, I don't know why I ever noticed that or how it got stuck in my head. I don't even eat bananas."
+string1="Is it weird the numbers that we remember in life that take up our brain space and yet are no longer needed? My lunch number in elementary school was 129780. Cool. What am I gonna do with that now? Or, for instance, the sticker on the banana that shows the produce code at grocery stores is usually #4011. Again, I don't know why I ever noticed that or how it got stuck in my head. I don't even eat bananas. That's about 60 cents I just saved. You're probably thinking SO WHAT...but if I were to NOT buy a pound of bananas for 60 cents every week for 40 years.....I'd be rich. About $1251 dollars richer that is. I'll take it."
 
 extract = re.findall(r'\d+', string1) 
 print(extract)
@@ -56,7 +56,7 @@ print(extract)
 
 So what just happened? Simply, d = numeric values [0-9] and the plus sign indicates one or more occurences. Here's a cheat sheet to practice more tasks!
 
-<center>![](/post/pythonblog_files/regex.jpg){width=50% height=50%}<center>
+![](/post/pythonblog_files/regex.jpg){width=50% height=50%}
 
 Hopefully this was a good glimpse into what communitcation between R and Python can do for us! 
  
