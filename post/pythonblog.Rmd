@@ -24,6 +24,7 @@ Now! let's backtrack a little bit by starting with reticulate and *then* getting
 
 
 **1. RETICULATE**
+
 Reticulate preps us for the use of R and Python. Let's do a very simple demonstration of using an R dataset with python functions and then vice versa; a python dataset with R functions
 ```{R}
 library(reticulate) 
