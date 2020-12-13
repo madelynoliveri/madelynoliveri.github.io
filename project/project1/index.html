@@ -7,7 +7,7 @@
     <meta name="author" content="Madelyn Oliveri" />
     
     <link rel="shortcut icon" type="image/x-icon" href="../../img/favicon.ico">
-    <title>HW 1</title>
+    <title>Project 1: Exploratory Data Analysis</title>
     <meta name="generator" content="Hugo 0.79.0" />
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="../../css/main.css" />
@@ -54,7 +54,7 @@
       <div class="container">
         <div class="blog-post">
           <h3>
-            <strong><a href="../../project/project1/">HW 1</a></strong>
+            <strong><a href="../../project/project1/">Project 1: Exploratory Data Analysis</a></strong>
           </h3>
         </div>
  
@@ -74,177 +74,394 @@
 <script src="../../rmarkdown-libs/anchor-sections/anchor-sections.js"></script>
 
 
-<div id="enter-your-name-and-eid-here" class="section level4">
-<h4>Enter your name and EID here</h4>
-<p><strong>This homework is due on Sep 6, 2020 at 11:59pm. Please submit as an HTML file on Canvas.</strong></p>
-<p><em>For all questions, include the R commands/functions that you used to find your answer. Answers without supporting code will not receive credit.</em></p>
-<div id="how-to-submit-this-assignment" class="section level5">
-<h5>How to submit this assignment</h5>
-<blockquote>
-<p>All homework assignments will be completed using R Markdown. These <code>.Rmd</code> files consist of text/syntax (formatted using Markdown) alongside embedded R code. When you have completed the assignment (by adding R code inside codeblocks and supporting text outside codeblocks), create your document as follows:</p>
-</blockquote>
-<blockquote>
-<ul>
-<li>Click the &quot;Knit&quot; button (above)</li>
-<li>Fix any errors in your code, if applicable</li>
-<li>Upload the HTML file to Canvas</li>
-</ul>
-</blockquote>
-<hr />
+<div id="madelyn-oliveri-mmo698-project-1" class="section level1">
+<h1>Madelyn Oliveri mmo698, Project 1</h1>
+<p>*In this study I will be comparing motor vehicle data alongside U.S civilian house fire data; in-particular, examining trends in the number of deaths over the years from each type of accident, with the common variable being the year (1960-2018). Motor vehicle accident data was collected from the Bureau of Transportation Statistics which includes motorcycles while excluding commercial vehicles. It includes the number of crashes, the total number of deaths (presented as Deaths.x), as well as the estimated number of registered drivers (in millions). House-fire data was retrieved from the National Fire Protection Association research articles on “Home Structure Fires”. The variables include the most-prevalent cause of fire (such as electrical, cooking, etc.), reported property damage (in U.S. billions), and the total number of deaths each year (presented as ‘Deaths.y’) which are all categorized by yearly totals.</p>
+<p>*I am interested in this data due to the last decade’s rapid advancement in technology. Two potential associations I expect could be an increase in vehicle crashes and deaths due to distracted driving (texting, social apps, etc.) while a decrease in house fires from these same advancements. This predicted trend may be valid as safety policies, and therefore, safety features on appliances improve to protect against accidental house fires.</p>
+<pre class="r"><code>library(tidyverse)
+library(dplyr)
+library(ggplot2)
+
+library(readr)
+cars &lt;- read_csv(&quot;cars.csv&quot;)
+
+housefires &lt;- read_csv(&quot;housefires.csv&quot;)</code></pre>
 </div>
+<div id="load-and-name-datasets" class="section level1">
+<h1>Load and name datasets</h1>
+<pre class="r"><code>cars$Year &lt;- as.numeric(as.double(cars$Year))
+housefires$Year &lt;- as.numeric(as.character(housefires$Year))</code></pre>
 </div>
-<div id="q1-1-pts" class="section level2">
-<h2>Q1 (1 pts)</h2>
-<div id="the-dataset-quakes-contains-information-about-earthquakes-occurring-near-fiji-since-1964.-the-first-few-observations-are-listed-below." class="section level5">
-<h5>The dataset <code>quakes</code> contains information about earthquakes occurring near Fiji since 1964. The first few observations are listed below.</h5>
-<pre class="r"><code>head(quakes)</code></pre>
-<pre><code>##      lat   long depth mag stations
-## 1 -20.42 181.62   562 4.8       41
-## 2 -20.62 181.03   650 4.2       15
-## 3 -26.00 184.10    42 5.4       43
-## 4 -17.97 181.66   626 4.1       19
-## 5 -20.42 181.96   649 4.0       11
-## 6 -19.68 184.31   195 4.0       12</code></pre>
+<div id="convert-double-type-to-numeric-convert-character-value-to-numeric" class="section level1">
+<h1>Convert ‘double’ type to numeric, convert ‘character’ value to numeric</h1>
+<pre class="r"><code>fj &lt;- full_join(cars, housefires, by = c(Year = &quot;Year&quot;))
+view(fj)</code></pre>
+<p>*The common variable is 'year', with only one observation per year, per column. Additionally both datasets contain similar numeric categories with only one categorical variable present, making a full_join the easiest and most appropriate way to merge data. This keeps all columns and rows present which we will need for future graphs and comparisons. No cases needed to be dropped since data was already tidy/ no NAs.</p>
+<pre class="r"><code>filtered &lt;- fj %&gt;% filter(Property_Damage &gt;= 7, Deaths.y &lt;= 4000, 
+    Year &gt; 1990) %&gt;% head()</code></pre>
 </div>
-<div id="how-many-observations-are-there-of-each-variable-i.e.-how-many-rows-are-there-show-using-code-how-many-variables-are-there-total-i.e.-how-many-columns-are-in-the-dataset-you-can-read-more-about-the-dataset-here-do-not-forget-to-include-the-code-you-used-to-find-the-answer-each-question" class="section level5">
-<h5>How many observations are there of each variable (i.e., how many rows are there; show using code)? How many variables are there total (i.e., how many columns are in the dataset)? You can read more about the dataset <a href="https://stat.ethz.ch/R-manual/R-patched/library/datasets/html/quakes.html">here</a> <em>Do not forget to include the code you used to find the answer each question</em></h5>
-<pre class="r"><code># your code here</code></pre>
-<p><em>Your typed answer goes here. 1-2 sentences only.</em></p>
-<hr />
+<div id="creating-a-new-dataframe-filtered-that-creates-an-output-only-if-all-criteria-is-met-through-the-filtered-settings" class="section level1">
+<h1>Creating a new dataframe ‘filtered’ that creates an output only if all criteria is met through the filtered settings</h1>
+<p>*property damage is greater than or equal to seven billion, while house fire deaths (.y) are less than or equal to 4000 people, and the year must be greater than 1990.</p>
+<pre class="r"><code>fj %&gt;% select_if(is.numeric) %&gt;% select_if(~mean(.) &gt; 3500)</code></pre>
+<pre><code>## # A tibble: 59 x 3
+##    Deaths.x Crashes Deaths.y
+##       &lt;dbl&gt;   &lt;dbl&gt;    &lt;dbl&gt;
+##  1    36399   31399     5545
+##  2    36285   31600     6340
+##  3    38980   33010     6400
+##  4    41723   33477     5890
+##  5    45645   35203     5995
+##  6    47089   35482     6685
+##  7    50894   34886     6700
+##  8    50724   35220     5225
+##  9    50725   36967     6185
+## 10    53543   36093     5200
+## # … with 49 more rows</code></pre>
 </div>
+<div id="the-select_if-command-performs-an-operation-on-variables-that-satisfy-a-logical-criteria.-in-this-case-we-are-selecting-data-if-the-mode-is-numeric--whether-the-type-be-integer-or-double--and-then-within-the-numeric-columns-we-are-only-observing-data-if-the-average-is-greater-than-3500.-if-the-set-were-to-yield-missing-values-then-we-would-include-na.rmtrue-but-it-is-not-necessary-in-this-case." class="section level1">
+<h1>The select_if() command performs an operation on variables that satisfy a logical criteria. In this case we are selecting data <em>if</em> the mode is numeric -whether the type be integer or double-, and then within the numeric columns, we are only observing data if the average is greater than 3,500. If the set were to yield missing values, then we would include “(na.rm=TRUE)”, but it is not necessary in this case.</h1>
+<pre class="r"><code>fj %&gt;% arrange(Prevalent_Cause) %&gt;% head()</code></pre>
+<pre><code>## # A tibble: 6 x 7
+##    Year Deaths.x Crashes Estimated_Drive… Property_Damage Deaths.y
+##   &lt;dbl&gt;    &lt;dbl&gt;   &lt;dbl&gt;            &lt;dbl&gt;           &lt;dbl&gt;    &lt;dbl&gt;
+## 1  1966    50894   34886             103.             3.5     6700
+## 2  1971    52542   36999             118.             3.9     6540
+## 3  1980    51091   45284             147.             6.3     6505
+## 4  1987    46390   41438             163.             7.2     5810
+## 5  1992    39250   34942             173.             8.3     4730
+## 6  1961    36285   31600              92              3       6340
+## # … with 1 more variable: Prevalent_Cause &lt;chr&gt;</code></pre>
 </div>
-<div id="q2-2-pts" class="section level2">
-<h2>Q2 (2 pts)</h2>
-<div id="what-are-the-minimum-maximum-mean-and-median-values-for-the-variables-mag-and-depth-note-that-there-are-many-functions-that-can-be-used-to-answer-this-question.-if-you-chose-to-work-with-each-variable-separately-recall-that-you-can-access-individual-variables-in-a-dataframe-using-the-operator-e.g.-datasetvariable.-describe-your-answer-in-words." class="section level5">
-<h5>What are the minimum, maximum, mean, and median values for the variables <code>mag</code> and <code>depth</code>? Note that there are many functions that can be used to answer this question. If you chose to work with each variable separately, recall that you can access individual variables in a dataframe using the <code>$</code> operator (e.g., <code>dataset$variable</code>). Describe your answer in words.</h5>
-<pre class="r"><code># your code here</code></pre>
-<p><em>Your typed answer goes here. 1-2 sentences only.</em></p>
-<hr />
+<div id="the-full-joined-dataset-is-being-re-arranged-by-the-categorical-variable-describing-the-most-common-cause-of-house-fires-that-year-into-chunked-rows-for-a-different-way-of-visualizing-the-data." class="section level1">
+<h1>The full joined dataset is being re-arranged by the categorical variable describing the most common cause of house fires that year into chunked rows for a different way of visualizing the data.</h1>
+<p>*These ‘chunks’ include: children, cooking, electrical, flammables, and heating.</p>
+<pre class="r"><code>newvars &lt;- fj %&gt;% mutate(death_proportion = Deaths.y/Deaths.x, 
+    pd_euros = Property_Damage * 0.85)
+newvars &lt;- newvars[-c(3, 4, 7)]
+view(newvars)</code></pre>
 </div>
+<div id="a-new-dataset-is-created-to-show-two-new-variables-from-two-different-mutations." class="section level1">
+<h1>A new dataset is created to show two new variables from two different mutations.</h1>
+<p>*The first mutation is the proportion of house fire deaths to motor vehicle deaths. The second mutation takes house fire property damage in U.S. dollars (billions) and converts to European currency.</p>
+<pre class="r"><code>fj %&gt;% summarize_if(is.numeric, max) %&gt;% data.frame()</code></pre>
+<pre><code>##   Year Deaths.x Crashes Estimated_Drivers Property_Damage Deaths.y
+## 1 2018    54589   45284               327              44     7710</code></pre>
 </div>
-<div id="q3" class="section level2">
-<h2>Q3</h2>
-<div id="recall-how-logical-indexing-of-a-dataframe-works-in-r.-to-refresh-your-memory-in-the-example-code-below-i-ask-r-for-the-median-magnitude-for-quakes-whose-longitude-is-greater-than-175.-the-two-ways-produce-equivalent-results." class="section level5">
-<h5>Recall how logical indexing of a dataframe works in R. To refresh your memory, in the example code below I ask R for the median magnitude for quakes whose longitude is greater than 175. The two ways produce equivalent results.</h5>
-<pre class="r"><code>median(quakes$mag[quakes$long &gt; 175])</code></pre>
-<pre><code>## [1] 4.5</code></pre>
-<pre class="r"><code>median(quakes[quakes$long &gt; 175, ]$mag)  #this is the more conventional notation</code></pre>
-<pre><code>## [1] 4.5</code></pre>
+<div id="data-is-summarized-by-the-maximum-value-in-each-numeric-category" class="section level1">
+<h1>Data is summarized by the maximum value in each numeric category</h1>
+<pre class="r"><code>correlation &lt;- fj[-c(7)]
+cor(correlation, method = &quot;pearson&quot;, use = &quot;complete.obs&quot;)</code></pre>
+<pre><code>##                         Year   Deaths.x    Crashes Estimated_Drivers
+## Year               1.0000000 -0.6509865 -0.2664422         0.9618342
+## Deaths.x          -0.6509865  1.0000000  0.7183493        -0.5927106
+## Crashes           -0.2664422  0.7183493  1.0000000        -0.1891954
+## Estimated_Drivers  0.9618342 -0.5927106 -0.1891954         1.0000000
+## Property_Damage    0.6780387 -0.4266316 -0.1706282         0.7025535
+## Deaths.y          -0.8300523  0.7172055  0.5666570        -0.7542348
+##                   Property_Damage   Deaths.y
+## Year                    0.6780387 -0.8300523
+## Deaths.x               -0.4266316  0.7172055
+## Crashes                -0.1706282  0.5666570
+## Estimated_Drivers       0.7025535 -0.7542348
+## Property_Damage         1.0000000 -0.4448266
+## Deaths.y               -0.4448266  1.0000000</code></pre>
+<pre class="r"><code>cortable &lt;- cor(correlation, method = &quot;pearson&quot;, use = &quot;complete.obs&quot;)
+knitr::kable(cortable)</code></pre>
+<table>
+<colgroup>
+<col width="18%" />
+<col width="11%" />
+<col width="11%" />
+<col width="11%" />
+<col width="18%" />
+<col width="16%" />
+<col width="11%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left"></th>
+<th align="right">Year</th>
+<th align="right">Deaths.x</th>
+<th align="right">Crashes</th>
+<th align="right">Estimated_Drivers</th>
+<th align="right">Property_Damage</th>
+<th align="right">Deaths.y</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Year</td>
+<td align="right">1.0000000</td>
+<td align="right">-0.6509865</td>
+<td align="right">-0.2664422</td>
+<td align="right">0.9618342</td>
+<td align="right">0.6780387</td>
+<td align="right">-0.8300523</td>
+</tr>
+<tr class="even">
+<td align="left">Deaths.x</td>
+<td align="right">-0.6509865</td>
+<td align="right">1.0000000</td>
+<td align="right">0.7183493</td>
+<td align="right">-0.5927106</td>
+<td align="right">-0.4266316</td>
+<td align="right">0.7172055</td>
+</tr>
+<tr class="odd">
+<td align="left">Crashes</td>
+<td align="right">-0.2664422</td>
+<td align="right">0.7183493</td>
+<td align="right">1.0000000</td>
+<td align="right">-0.1891954</td>
+<td align="right">-0.1706282</td>
+<td align="right">0.5666570</td>
+</tr>
+<tr class="even">
+<td align="left">Estimated_Drivers</td>
+<td align="right">0.9618342</td>
+<td align="right">-0.5927106</td>
+<td align="right">-0.1891954</td>
+<td align="right">1.0000000</td>
+<td align="right">0.7025535</td>
+<td align="right">-0.7542348</td>
+</tr>
+<tr class="odd">
+<td align="left">Property_Damage</td>
+<td align="right">0.6780387</td>
+<td align="right">-0.4266316</td>
+<td align="right">-0.1706282</td>
+<td align="right">0.7025535</td>
+<td align="right">1.0000000</td>
+<td align="right">-0.4448266</td>
+</tr>
+<tr class="even">
+<td align="left">Deaths.y</td>
+<td align="right">-0.8300523</td>
+<td align="right">0.7172055</td>
+<td align="right">0.5666570</td>
+<td align="right">-0.7542348</td>
+<td align="right">-0.4448266</td>
+<td align="right">1.0000000</td>
+</tr>
+</tbody>
+</table>
 </div>
-<div id="pt" class="section level3">
-<h3>3.1 (1 pt)</h3>
-<div id="explain-what-each-of-the-two-lines-of-code-are-doing-in-words.-specifically-why-do-we-need-to-use-the-comma-in-the-second-case-but-not-in-the-first-remember-that-the-selects-a-single-variable-and-that-are-used-for-indexing-whatever-object-came-before-either-a-single-variable-or-a-dataframe." class="section level5">
-<h5>Explain what each of the two lines of code are doing in words. Specifically, why do we need to use the comma in the second case but not in the first? Remember that the <code>$</code> selects a single variable and that <code>[ ]</code> are used for indexing whatever object came before (either a single variable or a dataframe).</h5>
-<p><em>Your answer goes here. 1-2 sentences only.</em></p>
+<div id="correlation-between-all-numeric-variables-and-presented-in-a-table-using-kable" class="section level1">
+<h1>Correlation between all numeric variables and presented in a table using kable</h1>
+<p>*There is not much correlation. However there is a strong positive correlation between the estimated number of drivers and the year. As the years continue, there are more registered drivers.</p>
+<pre class="r"><code>fjnumbers &lt;- fj[-c(1, 7)]
+summary &lt;- fjnumbers %&gt;% 
+summarise(avg_deathsx = mean(Deaths.x), min_deathsx = min(Deaths.x), 
+    max_deathsx = max(Deaths.x), quant_deathsx = quantile(Deaths.x), 
+    sd_deathsx = sd(Deaths.x), var_deathsx = var(Deaths.x), ndis_deathsx = n_distinct(Deaths.x), 
+    total_deathsx = n(), avg_deathsy = mean(Deaths.y), min_deathsy = min(Deaths.y), 
+    max_deathsy = max(Deaths.y), quant_deathsy = quantile(Deaths.y), 
+    sd_deathsy = sd(Deaths.y), var_deathsy = var(Deaths.y), ndis_deathsy = n_distinct(Deaths.y), 
+    total_deathsy = n(), avg_Crashes = mean(Crashes), min_Crashes = min(Crashes), 
+    max_Crashes = max(Crashes), quant_Crashes = quantile(Crashes), 
+    sd_Crashes = sd(Crashes), var_Crashes = var(Crashes), ndis_Crashes = n_distinct(Crashes), 
+    total_Crashes = n(), avg_pd = mean(Property_Damage), min_pd = min(Property_Damage), 
+    max_pd = max(Property_Damage), quant_pd = quantile(Property_Damage), 
+    sd_pd = sd(Property_Damage), var_pd = var(Property_Damage), 
+    ndis_pd = n_distinct(Property_Damage), total_pd = n())</code></pre>
 </div>
+<div id="a-summary-of-statistics-on-all-numeric-variables." class="section level1">
+<h1>A summary of statistics on all numeric variables.</h1>
+<p>*average vehicle deaths: 43,234.54 minimum amount of vehicle deaths: 32,479 maximum amount of vehicle deaths: 54,589 quantile:32,479 standard deviation: 5833.071 variance: 34,024,714 distinct cases: 59 total: 59</p>
+<p>*average house fire deaths: 5,083 minimum amount of house fire deaths: 2,855 maximum amount of house fire deaths: 7,710 quantile: 2855 standard deviation: 1,424 variance: 2,028,811 distinct cases: 57 total: 59</p>
+<p>*average number of crashes: 37,034 minimum number of crashes: 29,867 maximum number of crashes: 45,284 quantile: 29,867 standard deviation: 3,768 variance:14,204,783 number of distinct crashes: 59 total: 59</p>
+<p>*average property damage: $8.856 billion minimum property damage: $3 billion maximum property damage: $44 billion quantile: $8.2 billion standard deviation: $6.483 billion variance: 42.03 distinct cases: 50 total: 59</p>
+<pre class="r"><code>housefires %&gt;% group_by(Prevalent_Cause) %&gt;% 
+summarise(avg_housedeaths = mean(Deaths), min_housedeaths = min(Deaths), 
+    max_housedeaths = max(Deaths), quant_housedeaths = quantile(Deaths), 
+    sd_housedeaths = sd(Deaths), var_housedeaths = var(Deaths), 
+    ndis_housedeaths = n_distinct(Deaths), total = n())</code></pre>
+<pre><code>## # A tibble: 25 x 9
+## # Groups:   Prevalent_Cause [5]
+##    Prevalent_Cause avg_housedeaths min_housedeaths max_housedeaths
+##    &lt;chr&gt;                     &lt;dbl&gt;           &lt;dbl&gt;           &lt;dbl&gt;
+##  1 children                  6057             4730            6700
+##  2 children                  6057             4730            6700
+##  3 children                  6057             4730            6700
+##  4 children                  6057             4730            6700
+##  5 children                  6057             4730            6700
+##  6 cooking                   5228.            3275            7395
+##  7 cooking                   5228.            3275            7395
+##  8 cooking                   5228.            3275            7395
+##  9 cooking                   5228.            3275            7395
+## 10 cooking                   5228.            3275            7395
+## # … with 15 more rows, and 5 more variables: quant_housedeaths &lt;dbl&gt;,
+## #   sd_housedeaths &lt;dbl&gt;, var_housedeaths &lt;dbl&gt;, ndis_housedeaths &lt;int&gt;,
+## #   total &lt;int&gt;</code></pre>
 </div>
-<div id="pts" class="section level3">
-<h3>3.2 (3 pts)</h3>
-<div id="what-is-the-mean-of-the-variable-mag-when-depth-is-greater-than-the-median-depth-what-is-the-mean-of-the-variable-mag-when-depth-is-less-than-the-median-depth-what-does-this-suggest-about-the-relationship-between-an-earthquakes-depth-and-its-magnitude" class="section level5">
-<h5>What is the mean of the variable <code>mag</code> when <code>depth</code> is <em>greater than</em> the median depth? What is the mean of the variable <code>mag</code> when <code>depth</code> is <em>less than</em> the median depth? What does this suggest about the relationship between an earthquake's depth and its magnitude?</h5>
-<pre class="r"><code># your code here</code></pre>
-<p><em>Your answer goes here. 1-2 sentences only.</em></p>
+<div id="summary-of-house-fire-deaths-grouped-by-the-prevalent-cause." class="section level1">
+<h1>Summary of house fire deaths grouped by the prevalent cause.</h1>
+<pre class="r"><code>housefires$Category[housefires$Deaths &gt;= 3500] = &quot;High&quot;
+housefires$Category[housefires$Deaths &lt; 3500] = &quot;Low&quot;</code></pre>
 </div>
+<div id="adds-column-category-and-assigns-deaths-greater-than-or-equal-to-3500-as-high-and-less-than-3500-as-low" class="section level1">
+<h1>Adds column 'Category' and assigns deaths greater than or equal to 3,500 as high and less than 3,500 as low</h1>
+<pre class="r"><code>housefires %&gt;% pivot_wider(names_from = Prevalent_Cause, values_from = Year, 
+    values_fill = 0)</code></pre>
+<pre><code>## # A tibble: 59 x 8
+##    Property_Damage Deaths Category flammables cooking heating electrical
+##              &lt;dbl&gt;  &lt;dbl&gt; &lt;chr&gt;         &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;      &lt;dbl&gt;
+##  1             3.2   5545 High           1960       0       0          0
+##  2             3     6340 High              0    1961       0          0
+##  3             3.4   6400 High              0    1962       0          0
+##  4             3.3   5890 High              0       0    1963          0
+##  5             3.5   5995 High              0    1964       0          0
+##  6             4     6685 High              0       0       0       1965
+##  7             3.5   6700 High              0       0       0          0
+##  8             3.6   5225 High           1967       0       0          0
+##  9             3.8   6185 High              0    1968       0          0
+## 10             4     5200 High              0    1969       0          0
+## # … with 49 more rows, and 1 more variable: children &lt;dbl&gt;</code></pre>
 </div>
-<div id="pts-1" class="section level3">
-<h3>3.3 (2 pts)</h3>
-<div id="what-is-the-standard-deviation-of-the-variable-lat-when-depth-is-greater-than-the-median-depth-what-is-the-standard-deviation-of-the-variable-lat-when-depth-is-less-than-the-median-depth-what-does-this-suggest-about-the-relationship-between-an-earthquakes-latitude-and-its-depth" class="section level5">
-<h5>What is the standard deviation of the variable <code>lat</code> when <code>depth</code> is <em>greater than</em> the median depth? What is the standard deviation of the variable <code>lat</code> when <code>depth</code> is <em>less than</em> the median depth? What does this suggest about the relationship between an earthquake's latitude and its depth?</h5>
-<pre class="r"><code># your code here</code></pre>
-<p><em>Your answer goes here. 1-2 sentences only.</em></p>
-<hr />
+<div id="increases-number-of-columns-by-listing-each-prevalent-house-fire-cause-and-assigning-the-years-to-them." class="section level1">
+<h1>Increases number of columns by listing each prevalent house fire cause and assigning the years to them.</h1>
+<p>*So if the most common type of house fire was from cooking in 1960, then 1960 would go under that category along with other years when cooking was the most prevalent.</p>
+<pre class="r"><code>cars$Category[cars$Crashes &gt;= 35000] = &quot;High&quot;
+cars$Category[cars$Crashes &lt; 35000] = &quot;Low&quot;</code></pre>
 </div>
+<div id="categorizes-the-number-of-vehicle-crashes-into-high-if-there-are-35000-or-more-and-low-if-there-are-fewer." class="section level1">
+<h1>Categorizes the number of vehicle crashes into “High” if there are 35,000 or more and “Low” if there are fewer.</h1>
+<pre class="r"><code>pivot_longer(cars, cols = c(&quot;Category&quot;), names_to = &quot;Death&quot;, 
+    values_to = &quot;Year&quot;, names_repair = &quot;unique&quot;)</code></pre>
+<pre><code>## # A tibble: 59 x 6
+##    Year...1 Deaths Crashes Estimated_Drivers Death    Year...6
+##       &lt;dbl&gt;  &lt;dbl&gt;   &lt;dbl&gt;             &lt;dbl&gt; &lt;chr&gt;    &lt;chr&gt;   
+##  1     1960  36399   31399              88.9 Category Low     
+##  2     1961  36285   31600              92   Category Low     
+##  3     1962  38980   33010              93.7 Category Low     
+##  4     1963  41723   33477              95.6 Category Low     
+##  5     1964  45645   35203              99   Category High    
+##  6     1965  47089   35482             101   Category High    
+##  7     1966  50894   34886             103.  Category Low     
+##  8     1967  50724   35220             105.  Category High    
+##  9     1968  50725   36967             108.  Category High    
+## 10     1969  53543   36093             112.  Category High    
+## # … with 49 more rows</code></pre>
 </div>
+<div id="increases-the-number-of-rows" class="section level1">
+<h1>Increases the number of rows</h1>
+<pre class="r"><code>house &lt;- housefires %&gt;% group_by(Category) %&gt;% summarise(min_pc = min(Prevalent_Cause), 
+    max_pc = max(Prevalent_Cause), ndis_pc = n_distinct(Prevalent_Cause), 
+    total = n())</code></pre>
 </div>
-<div id="q4-2-pts" class="section level2">
-<h2>Q4 (2 pts)</h2>
-<div id="the-variable-depth-is-measured-in-kilometers.-create-a-new-variable-called-depth_m-that-gives-depth-in-meters-rather-than-kilometers-and-add-it-to-the-dataset-quakes.-to-help-get-you-started-i-have-given-you-code-that-creates-the-new-variable-but-fills-it-with-na-values.-overwrite-the-nas-below-by-writing-code-on-the-left-hand-side-of-the-assignment-operator---that-computes-the-requested-transformation.-print-out-the-first-few-rows-of-the-updated-dataset-using-head." class="section level5">
-<h5>The variable <code>depth</code> is measured in kilometers. Create a new variable called <code>depth_m</code> that gives depth <strong>in meters rather than kilometers</strong> and add it to the dataset <code>quakes</code>. To help get you started, I have given you code that creates the new variable but fills it with <code>NA</code> values. Overwrite the <code>NA</code>s below by writing code on the left-hand side of the assignment operator (<code>&lt;-</code>) that computes the requested transformation. Print out the first few rows of the updated dataset using <code>head()</code>.</h5>
-<pre class="r"><code># update the code below by replacing the NA with
-# the correct expression to convert to meters
-quakes$depth_m &lt;- NA</code></pre>
+<div id="two-categorical-variables-are-related-through-summarizing-the-data-on-the-common-cause-of-fire-displayed-within-the-groups-high-or-low-amount-of-deaths." class="section level1">
+<h1>Two categorical variables are related through summarizing the data on the common cause of fire displayed within the groups ‘high’ or ‘low’ amount of deaths.</h1>
+<p>*With 3,500 or more deaths, the least common cause of a house fire was due to children and the most common cause was from heating a house. With fewer than 3,500 deaths, the least common cause of fires was cooking and the most common was heating the house (again). The number of unique variables grouped by high death rate is 6 and for low death rate is 3. The total number of observations for high amounts of deaths is 46 and low amounts of deaths, 13.</p>
+<pre class="r"><code>summary(correlation)</code></pre>
+<pre><code>##       Year         Deaths.x        Crashes      Estimated_Drivers
+##  Min.   :1960   Min.   :32479   Min.   :29867   Min.   : 88.9    
+##  1st Qu.:1974   1st Qu.:39700   1st Qu.:34853   1st Qu.:131.8    
+##  Median :1989   Median :42836   Median :37324   Median :167.0    
+##  Mean   :1989   Mean   :43235   Mean   :37034   Mean   :165.6    
+##  3rd Qu.:2004   3rd Qu.:46738   3rd Qu.:39126   3rd Qu.:199.8    
+##  Max.   :2018   Max.   :54589   Max.   :45284   Max.   :327.0    
+##  Property_Damage     Deaths.y   
+##  Min.   : 3.000   Min.   :2855  
+##  1st Qu.: 4.250   1st Qu.:3665  
+##  Median : 8.200   Median :5200  
+##  Mean   : 8.856   Mean   :5083  
+##  3rd Qu.:10.950   3rd Qu.:6206  
+##  Max.   :44.000   Max.   :7710</code></pre>
+<pre class="r"><code>apply(correlation, 2, sd)</code></pre>
+<pre><code>##              Year          Deaths.x           Crashes Estimated_Drivers 
+##         17.175564       5833.070722       3768.923273         45.770936 
+##   Property_Damage          Deaths.y 
+##          6.483674       1424.363469</code></pre>
+<pre class="r"><code>apply(correlation, 2, var)</code></pre>
+<pre><code>##              Year          Deaths.x           Crashes Estimated_Drivers 
+##      2.950000e+02      3.402471e+07      1.420478e+07      2.094979e+03 
+##   Property_Damage          Deaths.y 
+##      4.203802e+01      2.028811e+06</code></pre>
+<pre class="r"><code>apply(correlation, 2, n_distinct)</code></pre>
+<pre><code>##              Year          Deaths.x           Crashes Estimated_Drivers 
+##                59                59                59                58 
+##   Property_Damage          Deaths.y 
+##                50                57</code></pre>
 </div>
-</div>
-<div id="q5" class="section level2">
-<h2>Q5</h2>
-<div id="lets-make-some-plots-in-base-r." class="section level5">
-<h5>Let's make some plots in base R.</h5>
-</div>
-<div id="pt-1" class="section level3">
-<h3>5.1 (2 pt)</h3>
-<div id="create-a-boxplot-of-depth-using-the-boxplot-function.-describe-where-you-see-the-min-max-and-median-which-you-calculated-in-question-2-in-this-plot." class="section level5">
-<h5>Create a boxplot of <code>depth</code> using the <code>boxplot()</code> function. Describe where you see the min, max, and median (which you calculated in question 2) in this plot.</h5>
-<pre class="r"><code># your code here</code></pre>
-<p><em>Your answer goes here. 1-2 sentences only.</em></p>
-</div>
-</div>
-<div id="pt-2" class="section level3">
-<h3>5.2 (2 pt)</h3>
-<div id="create-a-histogram-of-depth-using-the-hist-function.-what-important-information-does-the-histogram-provide-that-the-boxplot-does-not" class="section level5">
-<h5>Create a histogram of <code>depth</code> using the <code>hist()</code> function. What important information does the histogram provide that the boxplot does not?</h5>
-<pre class="r"><code># your code here</code></pre>
-<p><em>Your answer goes here. 1-2 sentences only.</em></p>
-</div>
-</div>
-<div id="pt-3" class="section level3">
-<h3>5.3 (2 pt)</h3>
-<div id="create-a-scatterplot-by-plotting-variables-mag-and-stations-against-each-other-using-the-plot-function.-note-that-to-generate-a-scatterplot-the-plot-takes-two-arguments-the-x-axis-variable-and-the-y-axis-variable.-describe-the-relationship-between-the-two-variables." class="section level5">
-<h5>Create a scatterplot by plotting variables <code>mag</code> and <code>stations</code> against each other using the <code>plot()</code> function. Note that to generate a scatterplot, the <code>plot()</code> takes two arguments: the x-axis variable and the y-axis variable. Describe the relationship between the two variables.</h5>
-<pre class="r"><code># your code here</code></pre>
-<p><em>Your answer goes here. 1-2 sentences only.</em></p>
-</div>
-</div>
-<div id="pt-4" class="section level3">
-<h3>5.4 (3 pt)</h3>
-<div id="create-scatterplot-of-the-quakes-geographic-locations-by-plotting-long-on-the-x-axis-and-lat-on-the-y-axis.-using-this-plot-and-the-maplink-below-note-the-two-trenches-and-some-of-the-techniques-you-practiced-above-are-deeper-quakes-more-likely-to-originate-east-or-west-of-fiji" class="section level5">
-<h5>Create scatterplot of the quakes' geographic locations by plotting <code>long</code> on the x-axis and <code>lat</code> on the y-axis. Using this plot, and the map/link below (note the two trenches), and some of the techniques you practiced above, are deeper quakes more likely to originate east or west of Fiji?</h5>
-<p><img src="http://valorielord.com/default/cache/file/D4256462-E44C-32F4-62C9A3C4AA762918_bodyimage.png" /> <a href="https://www.google.com/maps/@-20.1679389,175.7587479,3513560m/data=!3m1!1e3">Link to location on Google maps</a></p>
-<pre class="r"><code># your code here</code></pre>
-<p><em>Your answer goes here. 1-2 sentences only.</em></p>
-<hr />
-<pre><code>## R version 3.6.1 (2019-07-05)
-## Platform: x86_64-pc-linux-gnu (64-bit)
-## Running under: Ubuntu 18.04.5 LTS
-## 
-## Matrix products: default
-## BLAS:   /stor/system/opt/R/R-3.6.1/lib/R/lib/libRblas.so
-## LAPACK: /stor/system/opt/R/R-3.6.1/lib/R/lib/libRlapack.so
-## 
-## locale:
-##  [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
-##  [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    
-##  [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=en_US.UTF-8   
-##  [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 
-##  [9] LC_ADDRESS=C               LC_TELEPHONE=C            
-## [11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
-## 
-## attached base packages:
-## [1] stats     graphics  grDevices utils     datasets  methods   base     
-## 
-## loaded via a namespace (and not attached):
-##  [1] compiler_3.6.1  magrittr_1.5    bookdown_0.20   formatR_1.7    
-##  [5] tools_3.6.1     htmltools_0.5.0 yaml_2.2.1      stringi_1.5.3  
-##  [9] rmarkdown_2.5   blogdown_0.20   knitr_1.29      stringr_1.4.0  
-## [13] digest_0.6.25   xfun_0.19       rlang_0.4.7     evaluate_0.14</code></pre>
-<pre><code>## [1] &quot;2020-12-10 11:49:59 CST&quot;</code></pre>
-<pre><code>##                                       sysname 
-##                                       &quot;Linux&quot; 
-##                                       release 
-##                          &quot;4.15.0-117-generic&quot; 
-##                                       version 
-## &quot;#118-Ubuntu SMP Fri Sep 4 20:02:41 UTC 2020&quot; 
-##                                      nodename 
-##                  &quot;educcomp01.ccbb.utexas.edu&quot; 
-##                                       machine 
-##                                      &quot;x86_64&quot; 
-##                                         login 
-##                                     &quot;unknown&quot; 
-##                                          user 
-##                                      &quot;mmo698&quot; 
-##                                effective_user 
-##                                      &quot;mmo698&quot;</code></pre>
-</div>
-</div>
+<div id="utilizes-the-correlation-dataset-to-produce-all-statistics-for-numeric-variables-by-column" class="section level1">
+<h1>Utilizes the ‘correlation’ dataset to produce all statistics for numeric variables by column</h1>
+<pre class="r"><code>library(corrplot)
+library(ggplot2)
+
+correlation = fj[1:6]
+cormat &lt;- round(cor(correlation),2)
+
+library(reshape2)
+melted_cormat &lt;- melt(cormat)
+
+
+get_lower_tri&lt;-function(cormat){
+cormat[upper.tri(cormat)] &lt;- NA
+return(cormat)
+}
+
+get_upper_tri &lt;- function(cormat){
+cormat[lower.tri(cormat)]&lt;- NA
+return(cormat)
+}
+
+upper_tri &lt;- get_upper_tri(cormat)
+
+
+melted_cormat &lt;- melt(upper_tri, na.rm = TRUE)
+
+ggheatmap &lt;- ggplot(melted_cormat, aes(Var2, Var1, fill = value))+
+    geom_tile(color = &quot;white&quot;)+
+    scale_fill_gradient2(low = &quot;blue&quot;, high = &quot;red&quot;, mid = &quot;white&quot;, 
+                         midpoint = 0, limit = c(-1,1), space = &quot;Lab&quot;, 
+                         name=&quot;Pearson\nCorrelation&quot;) +
+    theme_minimal()+ # minimal theme
+    theme(axis.text.x = element_text(angle = 45, vjust = 1, 
+                                     size = 12, hjust = 1))+
+    coord_fixed()
+
+
+ggheatmap + 
+    geom_text(aes(Var2, Var1, label = value), color = &quot;black&quot;, size = 4) +
+    theme(
+        axis.title.x = element_blank(),
+        axis.title.y = element_blank(),
+        panel.grid.major = element_blank(),
+        panel.border = element_blank(),
+        panel.background = element_blank(),
+        axis.ticks = element_blank(),
+        legend.justification = c(1, 0),
+        legend.position = c(0.6, 0.7),
+        legend.direction = &quot;horizontal&quot;)+
+    guides(fill = guide_colorbar(barwidth = 7, barheight = 1,
+                                 title.position = &quot;top&quot;, title.hjust = 0.5))</code></pre>
+<p><img src="../../project/project1_files/figure-html/unnamed-chunk-18-1.png" width="672" style="display: block; margin: auto;" /> #Produces Pearson correlation map to easily view the correlation between all numberic variable. *There are some trends shown on the Pearson correlation graph. There is a small positive correlation between the number of deaths due to crahses and deaths due to housefires. There is another positive correlation between property damage and the year. Additionally, there is a negative correlation between the number of house fire deaths and the year which could support the idea that safety features on technology and appliances has increased to prevent fires.</p>
+<pre class="r"><code>fj %&gt;% ggplot(aes(x = Prevalent_Cause, y = Property_Damage, fill = Prevalent_Cause, 
+    color = &quot;black&quot;)) + geom_boxplot() + theme(legend.position = &quot;bottom&quot;) + 
+    ggtitle(&quot;Distribution of Property Damage Cost in U.S. Billions by Fire Type&quot;)</code></pre>
+<p><img src="../../project/project1_files/figure-html/unnamed-chunk-19-1.png" width="672" style="display: block; margin: auto;" /> #Boxplots</p>
+<p>*Boxplots comparing trends in property damage as categorized by type of fire. There are three outliers for the amount of property damage, two of which fall under cooking which could skew the data. Flammables caused the least amount of propery damage expenses while all other categories are failry similar in costs.</p>
+<pre class="r"><code>ggplot(housefires, aes(x = Year, y = Property_Damage, color = Category)) + 
+    geom_point(size = 3, alpha = 0.5) + geom_line() + theme(legend.position = &quot;bottom&quot;) + 
+    ggtitle(&quot;Property Damage by Year&quot;) + xlab(&quot;Year&quot;) + ylab(&quot;Reported Property Damage (billions)&quot;) + 
+    scale_y_continuous(breaks = seq(0, 45, 5)) + stat_summary(fun = mean, 
+    color = &quot;black&quot;, size = 0.5)</code></pre>
+<p><img src="../../project/project1_files/figure-html/unnamed-chunk-20-1.png" width="672" style="display: block; margin: auto;" /> #Point plot</p>
+<p>*A different way of showing property damage trends throughout the years, but instead, categorized by high and low amounts of deaths. There have been a lower amount of house fire deaths from 2000 onward.This graph also shows that property damage has steadily increased over the years. This could be due to inflation in the US Economy.</p>
+<pre class="r"><code>library(cluster)
+library(factoextra)
+
+library(ggplot2)
+library(ggfortify)
+
+fjnumbers &lt;- fj[-c(1, 7)]
+pamfj &lt;- pam(fjnumbers, 3, keep.diss = TRUE)
+plot(pamfj)</code></pre>
+<p><img src="../../project/project1_files/figure-html/unnamed-chunk-21-1.png" width="672" style="display: block; margin: auto;" /><img src="../../project/project1_files/figure-html/unnamed-chunk-21-2.png" width="672" style="display: block; margin: auto;" /> #k clusters/PAM, graphs</p>
+<p>*Three clusters is best because it is most uniformly grouped. The silhouette graphs help measure how close each point in one cluster is to points in the neighboring clusters. A trong structure is found between 0.71 to 1.00. A reasonable structure lies between 0.51 to 0.70. A weak structure is about 0.26 to 0.50. There is no substantial structure if between -1 to 0.25.In this case, two clusters have a reasonable structure with values of 0.54 while the third has a weak structre with a value of 0.35.</p>
+<pre class="r"><code>autoplot(pam(fjnumbers, 3), frame = TRUE, frame.type = &quot;norm&quot;)</code></pre>
+<p><img src="../../project/project1_files/figure-html/unnamed-chunk-22-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 
             

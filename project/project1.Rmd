@@ -1,160 +1,285 @@
 ---
-title: "HW 1"
-author: "SDS348 Fall 2020"
-date: "`r format(Sys.Date(), '%B %d, %Y')`"
+title: 'Project 1: Exploratory Data Analysis'
+author: "SDS348"
+date: ''
 output:
   html_document:
-    toc: true
+    toc: yes
     toc_float:
-      collapsed: false
+      collapsed: no
+      smooth_scroll: yes
+  pdf_document:
+    toc: no
 ---
 
-```{r global_options, include=FALSE}
-#DO NOT EDIT THIS CHUNK OR ANYTHING ABOVE IT!
-knitr::opts_chunk$set(echo = TRUE, eval = TRUE, fig.align = "center", warning = F, message = F, tidy=T, tidy.opts=list(width.cutoff=50))
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, eval = TRUE, fig.align = "center", warning = F, message = F,
+tidy=TRUE, tidy.opts=list(width.cutoff=60), R.options=list(max.print=100))
 ```
 
-#### Enter your name and EID here
+#Madelyn Oliveri mmo698, Project 1
+*In this study I will be comparing motor vehicle data alongside U.S civilian house fire data; in-particular, examining trends in the number of deaths over the years from each type of accident, with the common variable being the year (1960-2018). Motor vehicle accident data was collected from the Bureau of Transportation Statistics which includes motorcycles while excluding commercial vehicles. It includes the number of crashes, the total number of deaths (presented as Deaths.x), as well as the estimated number of registered drivers (in millions). House-fire data was retrieved from the National Fire Protection Association research articles on “Home Structure Fires”. The variables include the most-prevalent cause of fire (such as electrical, cooking, etc.), reported property damage (in U.S. billions), and the total number of deaths each year (presented as ‘Deaths.y’) which are all categorized by yearly totals.
 
-**This homework is due on Sep 6, 2020 at 11:59pm. Please submit as an HTML file on Canvas.**
-
-*For all questions, include the R commands/functions that you used to find your answer. Answers without supporting code will not receive credit.*
-
-##### How to submit this assignment
-
-> All homework assignments will be completed using R Markdown. 
-> These `.Rmd` files consist of text/syntax (formatted using Markdown) alongside embedded R code. 
-> When you have completed the assignment (by adding R code inside codeblocks and supporting text outside codeblocks), create your document as follows:
-
-> - Click the "Knit" button (above)
-> - Fix any errors in your code, if applicable
-> - Upload the HTML file to Canvas
-
----
-
-## Q1 (1 pts)
-
-##### The dataset `quakes` contains information about earthquakes occurring near Fiji since 1964. The first few observations are listed below. 
+*I am interested in this data due to the last decade’s rapid advancement in technology. Two potential associations I expect could be an increase in vehicle crashes and deaths due to distracted driving (texting, social apps, etc.)  while a decrease in house fires from these same advancements. This predicted trend may be valid as safety policies, and therefore, safety features on appliances improve to protect against accidental house fires.
 
 ```{R}
-head(quakes)
-```
+library(tidyverse)
+library(dplyr)
+library(ggplot2)
 
-##### How many observations are there of each variable (i.e., how many rows are there; show using code)? How many variables are there total (i.e., how many columns are in the dataset)? You can read more about the dataset [here](https://stat.ethz.ch/R-manual/R-patched/library/datasets/html/quakes.html) *Do not forget to include the code you used to find the answer each question*
+library(readr)
+cars <- read_csv("cars.csv")
+
+housefires <- read_csv("housefires.csv")
+```
+#Load and name datasets
 
 ```{R}
-# your code here
+cars$Year <-as.numeric(as.double(cars$Year))
+housefires$Year <-as.numeric(as.character(housefires$Year))
 ```
-
-*Your typed answer goes here. 1-2 sentences only.*
-
----
-
-## Q2 (2 pts)
-
-##### What are the minimum, maximum, mean, and median values for the variables `mag` and `depth`? Note that there are many functions that can be used to answer this question. If you chose to work with each variable separately, recall that you can access individual variables in a dataframe using the `$` operator (e.g., `dataset$variable`). Describe your answer in words.
+#Convert ‘double’ type to numeric, convert ‘character’ value to numeric
 
 ```{R}
-# your code here
+fj<-full_join(cars,housefires, by=c("Year"="Year"))
+view(fj)
 ```
-
-*Your typed answer goes here. 1-2 sentences only.*
-
----
-
-## Q3
-
-##### Recall how logical indexing of a dataframe works in R. To refresh your memory, in the example code below I ask R for the median magnitude for quakes whose longitude is greater than 175. The two ways produce equivalent results.
+*The common variable is 'year', with only one observation per year, per column. Additionally both datasets contain similar numeric categories with only one categorical variable present, making a full_join the easiest and most appropriate way to merge data. This keeps all columns and rows present which we will need for future graphs and comparisons. No cases needed to be dropped since data was already tidy/ no NAs.
 
 ```{R}
-median(quakes$mag[quakes$long>175])
-
-median(quakes[quakes$long>175,]$mag) #this is the more conventional notation
+filtered <- fj %>% filter(Property_Damage >= 7, Deaths.y <= 4000, Year > 1990) %>% head()
 ```
-
-### 3.1 (1 pt) 
-##### Explain what each of the two lines of code are doing in words. Specifically, why do we need to use the comma in the second case but not in the first? Remember that the `$` selects a single variable and that `[ ]` are used for indexing whatever object came before (either a single variable or a dataframe).
-
-*Your answer goes here. 1-2 sentences only.*
-
-
-### 3.2 (3 pts) 
-##### What is the mean of the variable `mag` when `depth` is *greater than* the median depth? What is the mean of the variable `mag` when `depth` is *less than* the median depth? What does this suggest about the relationship between an earthquake's depth and its magnitude?
+#Creating a new dataframe ‘filtered’ that creates an output only if all criteria is met through the filtered settings
+*property damage is greater than or equal to seven billion, while house fire deaths (.y) are less than or equal to 4000 people, and the year must be greater than 1990.
 
 ```{R}
-# your code here
+fj%>%select_if(is.numeric) %>%
+select_if(~mean(.) > 3500)
 ```
-
-*Your answer goes here. 1-2 sentences only.*
-
-### 3.3 (2 pts) 
-##### What is the standard deviation of the variable `lat` when `depth` is *greater than* the median depth? What is the standard deviation of the variable `lat` when `depth` is *less than* the median depth? What does this suggest about the relationship between an earthquake's latitude and its depth?
+#The select_if() command performs an operation on variables that satisfy a logical criteria. In this case we are selecting data *if* the mode is numeric -whether the type be integer or double-, and then within the numeric columns, we are only observing data if the average is greater than 3,500. If the set were to yield missing values, then we would include “(na.rm=TRUE)”, but it is not necessary in this case.
 
 ```{R}
-# your code here
+fj %>% arrange(Prevalent_Cause)%>% head()
 ```
-
-*Your answer goes here. 1-2 sentences only.*
-
----
-
-## Q4 (2 pts)
-
-##### The variable `depth` is measured in kilometers. Create a new variable called `depth_m` that gives depth **in meters rather than kilometers** and add it to the dataset `quakes`. To help get you started, I have given you code that creates the new variable but fills it with `NA` values. Overwrite the `NA`s below by writing code on the left-hand side of the assignment operator (`<-`) that computes the requested transformation. Print out the first few rows of the updated dataset using `head()`.
+#The full joined dataset is being re-arranged by the categorical variable describing the most common cause of house fires that year into chunked rows for a different way of visualizing the data. 
+*These ‘chunks’ include: children, cooking, electrical, flammables, and heating.
 
 ```{R}
-# update the code below by replacing the NA with the correct expression to convert to meters
-quakes$depth_m <- NA
+newvars <- fj %>% 
+mutate(death_proportion = Deaths.y / Deaths.x, 
+pd_euros = Property_Damage * 0.85) 
+newvars <- newvars[ -c(3,4,7) ]
+view(newvars)
 ```
-
-
-## Q5
-
-##### Let's make some plots in base R. 
-
-### 5.1 (2 pt) 
-##### Create a boxplot of `depth` using the `boxplot()` function. Describe where you see the min, max, and median (which you calculated in question 2) in this plot.
+#A new dataset is created to show two new variables from two different mutations. 
+*The first mutation is the proportion of house fire deaths to motor vehicle deaths. The second mutation takes house fire property damage in U.S. dollars (billions) and converts to European currency. 
 
 ```{R}
-# your code here
+fj %>% summarize_if(is.numeric, max) %>% data.frame()
 ```
-
-*Your answer goes here. 1-2 sentences only.*
-
-### 5.2 (2 pt) 
-##### Create a histogram of `depth` using the `hist()` function. What important information does the histogram provide that the boxplot does not?
+#Data is summarized by the maximum value in each numeric category
 
 ```{R}
-# your code here
+correlation<-fj[ -c(7) ]
+cor(correlation, method = "pearson", use = "complete.obs")
+cortable<-cor(correlation, method = "pearson", use = "complete.obs")
+knitr::kable(cortable)
 ```
-
-*Your answer goes here. 1-2 sentences only.*
-
-### 5.3 (2 pt) 
-##### Create a scatterplot by plotting variables `mag` and `stations` against each other using the `plot()` function. Note that to generate a scatterplot, the `plot()` takes two arguments: the x-axis variable and the y-axis variable. Describe the relationship between the two variables.
+#Correlation between all numeric variables and presented in a table using kable
+*There is not much correlation. However there is a strong positive correlation between the estimated number of drivers and the year. As the years continue, there are more registered drivers.
 
 ```{R}
-# your code here
+fjnumbers <- fj[-c(1, 7)]
+summary<-fjnumbers%>%
+             
+summarise(avg_deathsx = mean(Deaths.x), min_deathsx = min(Deaths.x),  max_deathsx = max(Deaths.x), quant_deathsx = quantile(Deaths.x), sd_deathsx = sd(Deaths.x), var_deathsx = var(Deaths.x), ndis_deathsx = n_distinct(Deaths.x), total_deathsx = n(), avg_deathsy = mean(Deaths.y), 
+ min_deathsy = min(Deaths.y), max_deathsy = max(Deaths.y),quant_deathsy = quantile(Deaths.y), sd_deathsy = sd(Deaths.y), var_deathsy = var(Deaths.y), ndis_deathsy = n_distinct(Deaths.y),total_deathsy = n(),avg_Crashes = mean(Crashes), min_Crashes = min(Crashes), max_Crashes = max(Crashes),quant_Crashes = quantile(Crashes), sd_Crashes = sd(Crashes), var_Crashes = var(Crashes), ndis_Crashes = n_distinct(Crashes), total_Crashes = n(), avg_pd = mean(Property_Damage), min_pd = min(Property_Damage), max_pd = max(Property_Damage),quant_pd = quantile(Property_Damage), sd_pd = sd(Property_Damage), var_pd = var(Property_Damage), ndis_pd = n_distinct(Property_Damage),total_pd = n())
+```
+#A summary of statistics on all numeric variables.
+*average vehicle deaths: 43,234.54
+minimum amount of vehicle deaths: 32,479
+maximum amount of vehicle deaths: 54,589
+quantile:32,479
+standard deviation: 5833.071
+variance: 34,024,714
+distinct cases: 59
+total: 59
+
+*average house fire deaths: 5,083
+minimum amount of house fire deaths: 2,855
+maximum amount of house fire deaths: 7,710
+quantile: 2855
+standard deviation: 1,424
+variance: 2,028,811
+distinct cases: 57
+total: 59
+
+*average number of crashes: 37,034
+minimum number of crashes: 29,867
+maximum number of crashes: 45,284
+quantile: 29,867
+standard deviation: 3,768
+variance:14,204,783
+number of distinct crashes: 59
+total: 59
+
+*average property damage: $8.856 billion
+minimum property damage: $3 billion
+maximum property damage: $44 billion
+quantile: $8.2 billion
+standard deviation: $6.483 billion
+variance: 42.03
+distinct cases: 50
+total: 59
+
+
+
+```{R}
+housefires%>%
+ group_by(Prevalent_Cause)%>%
+ 
+ summarise(avg_housedeaths = mean(Deaths), 
+              min_housedeaths = min(Deaths), 
+              max_housedeaths = max(Deaths),
+              quant_housedeaths = quantile(Deaths), 
+              sd_housedeaths = sd(Deaths), 
+              var_housedeaths = var(Deaths), 
+              ndis_housedeaths = n_distinct(Deaths),
+              total = n())
+```
+#Summary of house fire deaths grouped by the prevalent cause.
+
+```{R}
+housefires$Category[housefires$Deaths >= 3500] = "High"
+housefires$Category[housefires$Deaths < 3500] = "Low"
+```
+#Adds column 'Category' and assigns deaths greater than or equal to 3,500 as high and less than 3,500 as low
+
+```{R}
+housefires %>% pivot_wider(names_from = Prevalent_Cause, values_from = Year, values_fill = 0)
+```
+#Increases number of columns by listing each prevalent house fire cause and assigning the years to them. 
+*So if the most common type of house fire was from cooking in 1960, then 1960 would go under that category along with other years when cooking was the most prevalent.
+
+```{R}
+cars$Category[cars$Crashes >= 35000] = "High"
+cars$Category[cars$Crashes < 35000] = "Low"
+```
+#Categorizes the number of vehicle crashes into “High” if there are 35,000 or more and “Low” if there are fewer.
+
+```{R}
+pivot_longer(cars, cols = c("Category"), names_to = "Death", values_to = "Year", names_repair = "unique")
+```
+#Increases the number of rows
+
+```{R}
+house <- housefires %>% 
+ group_by(Category) %>% 
+summarise(min_pc = min(Prevalent_Cause),
+max_pc = max(Prevalent_Cause),
+ndis_pc = n_distinct(Prevalent_Cause),
+total = n())
+```
+#Two categorical variables are related through summarizing the data on the common cause of fire displayed within the groups ‘high’ or ‘low’ amount of deaths. 
+*With 3,500 or more deaths, the least common cause of a house fire was due to children and the most common cause was from heating a house. With fewer than 3,500 deaths, the least common cause of fires was cooking and the most common was heating the house (again). The number of unique variables grouped by high death rate is 6 and for low death rate is 3. The total number of observations for high amounts of deaths is 46 and low amounts of deaths, 13. 
+
+```{R}
+summary(correlation)
+
+apply(correlation,2,sd)
+apply(correlation,2,var)
+apply(correlation,2,n_distinct)
+```
+#Utilizes the ‘correlation’ dataset to produce all statistics for numeric variables by column
+
+```{R}
+library(corrplot)
+library(ggplot2)
+
+correlation = fj[1:6]
+cormat <- round(cor(correlation),2)
+
+library(reshape2)
+melted_cormat <- melt(cormat)
+
+
+get_lower_tri<-function(cormat){
+cormat[upper.tri(cormat)] <- NA
+return(cormat)
+}
+
+get_upper_tri <- function(cormat){
+cormat[lower.tri(cormat)]<- NA
+return(cormat)
+}
+
+upper_tri <- get_upper_tri(cormat)
+
+
+melted_cormat <- melt(upper_tri, na.rm = TRUE)
+
+ggheatmap <- ggplot(melted_cormat, aes(Var2, Var1, fill = value))+
+    geom_tile(color = "white")+
+    scale_fill_gradient2(low = "blue", high = "red", mid = "white", 
+                         midpoint = 0, limit = c(-1,1), space = "Lab", 
+                         name="Pearson\nCorrelation") +
+    theme_minimal()+ # minimal theme
+    theme(axis.text.x = element_text(angle = 45, vjust = 1, 
+                                     size = 12, hjust = 1))+
+    coord_fixed()
+
+
+ggheatmap + 
+    geom_text(aes(Var2, Var1, label = value), color = "black", size = 4) +
+    theme(
+        axis.title.x = element_blank(),
+        axis.title.y = element_blank(),
+        panel.grid.major = element_blank(),
+        panel.border = element_blank(),
+        panel.background = element_blank(),
+        axis.ticks = element_blank(),
+        legend.justification = c(1, 0),
+        legend.position = c(0.6, 0.7),
+        legend.direction = "horizontal")+
+    guides(fill = guide_colorbar(barwidth = 7, barheight = 1,
+                                 title.position = "top", title.hjust = 0.5))
+```
+#Produces Pearson correlation map to easily view the correlation between all numberic variable.
+*There are some trends shown on the Pearson correlation graph. There is a small positive correlation between the number of deaths due to crahses and deaths due to housefires. There is another positive correlation between property damage and the year. Additionally, there is a negative correlation between the number of house fire deaths and the year which could support the idea that safety features on technology and appliances has increased to prevent fires. 
+
+```{R}
+fj %>% 
+    ggplot(aes(x=Prevalent_Cause,y=Property_Damage, fill=Prevalent_Cause, color= "black")) + geom_boxplot()+ theme(legend.position="bottom") +ggtitle("Distribution of Property Damage Cost in U.S. Billions by Fire Type")
+```
+#Boxplots 
+
+*Boxplots comparing trends in property damage as categorized by type of fire. There are three outliers for the amount of property damage, two of which fall under cooking which could skew the data. Flammables caused the least amount of propery damage expenses while all other categories are failry similar in costs.
+
+```{R}
+ggplot(housefires, aes(x = Year, y = Property_Damage, color = Category)) + geom_point(size = 3, alpha = 0.5) + geom_line() + theme(legend.position = "bottom") + ggtitle("Property Damage by Year") +  xlab("Year") + ylab("Reported Property Damage (billions)")+ scale_y_continuous(breaks=seq(0, 45, 5))+stat_summary(fun = mean, color = "black", size = 0.5)
+```
+#Point plot
+
+*A different way of showing property damage trends throughout the years, but instead, categorized by high and low amounts of deaths. There have been a lower amount of house fire deaths from 2000 onward.This graph also shows that property damage has steadily increased over the years. This could be due to inflation in the US Economy.
+
+```{R}
+
+library(cluster)
+library(factoextra)
+
+library(ggplot2)
+library(ggfortify)
+
+fjnumbers<-fj[ -c(1,7) ]
+pamfj <- pam(fjnumbers, 3, keep.diss = TRUE)
+plot(pamfj)
+
+ ```
+#k clusters/PAM, graphs
+ 
+*Three clusters is best because it is most uniformly grouped. The silhouette graphs help measure how close each point in one cluster is to points in the neighboring clusters. A trong structure is found between 0.71 to 1.00. A reasonable structure lies between 0.51 to 0.70. A weak structure is about 0.26 to 0.50. There is no substantial structure if between -1 to 0.25.In this case, two clusters have a reasonable structure with values of 0.54 while the third has a weak structre with a value of 0.35.
+
+```{R}
+ autoplot(pam(fjnumbers,3), frame=TRUE, frame.type = "norm")
 ```
 
-*Your answer goes here. 1-2 sentences only.*
-
-### 5.4 (3 pt) 
-##### Create scatterplot of the quakes' geographic locations by plotting `long` on the x-axis and `lat` on the y-axis. Using this plot, and the map/link below (note the two trenches), and some of the techniques you practiced above, are deeper quakes more likely to originate east or west of Fiji?
-
-![](http://valorielord.com/default/cache/file/D4256462-E44C-32F4-62C9A3C4AA762918_bodyimage.png)
-[Link to location on Google maps](https://www.google.com/maps/@-20.1679389,175.7587479,3513560m/data=!3m1!1e3)
-
-```{R fig.width=4, fig.height=4}
-# your code here
-```
-
-*Your answer goes here. 1-2 sentences only.*
-
-
----
-
-```{R, echo=F}
-## DO NOT DELETE OR MODIFY THIS CHUNK: IT MUST BE PRESENT TO RECEIVE CREDIT FOR THE ASSIGNMENT
-sessionInfo(); Sys.time(); Sys.info()
-```
