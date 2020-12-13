@@ -74,34 +74,27 @@
 <script src="../../rmarkdown-libs/anchor-sections/anchor-sections.js"></script>
 
 
-<div id="madelyn-oliveri-mmo698-project-1" class="section level1">
-<h1>Madelyn Oliveri mmo698, Project 1</h1>
-<p>*In this study I will be comparing motor vehicle data alongside U.S civilian house fire data; in-particular, examining trends in the number of deaths over the years from each type of accident, with the common variable being the year (1960-2018). Motor vehicle accident data was collected from the Bureau of Transportation Statistics which includes motorcycles while excluding commercial vehicles. It includes the number of crashes, the total number of deaths (presented as Deaths.x), as well as the estimated number of registered drivers (in millions). House-fire data was retrieved from the National Fire Protection Association research articles on “Home Structure Fires”. The variables include the most-prevalent cause of fire (such as electrical, cooking, etc.), reported property damage (in U.S. billions), and the total number of deaths each year (presented as ‘Deaths.y’) which are all categorized by yearly totals.</p>
-<p>*I am interested in this data due to the last decade’s rapid advancement in technology. Two potential associations I expect could be an increase in vehicle crashes and deaths due to distracted driving (texting, social apps, etc.) while a decrease in house fires from these same advancements. This predicted trend may be valid as safety policies, and therefore, safety features on appliances improve to protect against accidental house fires.</p>
+<p>In this study I will be comparing motor vehicle data alongside U.S civilian house fire data; in-particular, examining trends in the number of deaths over the years from each type of accident, with the common variable being the year (1960-2018). Motor vehicle accident data was collected from the Bureau of Transportation Statistics which includes motorcycles while excluding commercial vehicles. It includes the number of crashes, the total number of deaths (presented as Deaths.x), as well as the estimated number of registered drivers (in millions). House-fire data was retrieved from the National Fire Protection Association research articles on “Home Structure Fires”. The variables include the most-prevalent cause of fire (such as electrical, cooking, etc.), reported property damage (in U.S. billions), and the total number of deaths each year (presented as ‘Deaths.y’) which are all categorized by yearly totals.</p>
+<p>I am interested in this data due to the last decade’s rapid advancement in technology. Two potential associations I expect could be an increase in vehicle crashes and deaths due to distracted driving (texting, social apps, etc.) while a decrease in house fires from these same advancements. This predicted trend may be valid as safety policies, and therefore, safety features on appliances improve to protect against accidental house fires.</p>
 <pre class="r"><code>library(tidyverse)
 library(dplyr)
 library(ggplot2)
 
-library(readr)
+library(readr)  #Load and name datasets
 cars &lt;- read_csv(&quot;cars.csv&quot;)
 
 housefires &lt;- read_csv(&quot;housefires.csv&quot;)</code></pre>
-</div>
-<div id="load-and-name-datasets" class="section level1">
-<h1>Load and name datasets</h1>
 <pre class="r"><code>cars$Year &lt;- as.numeric(as.double(cars$Year))
-housefires$Year &lt;- as.numeric(as.character(housefires$Year))</code></pre>
-</div>
-<div id="convert-double-type-to-numeric-convert-character-value-to-numeric" class="section level1">
-<h1>Convert ‘double’ type to numeric, convert ‘character’ value to numeric</h1>
+housefires$Year &lt;- as.numeric(as.character(housefires$Year))
+# Convert ‘double’ type to numeric, convert ‘character’ value
+# to numeric</code></pre>
 <pre class="r"><code>fj &lt;- full_join(cars, housefires, by = c(Year = &quot;Year&quot;))
 view(fj)</code></pre>
-<p>*The common variable is 'year', with only one observation per year, per column. Additionally both datasets contain similar numeric categories with only one categorical variable present, making a full_join the easiest and most appropriate way to merge data. This keeps all columns and rows present which we will need for future graphs and comparisons. No cases needed to be dropped since data was already tidy/ no NAs.</p>
+<p>The common variable is 'year', with only one observation per year, per column. Additionally both datasets contain similar numeric categories with only one categorical variable present, making a full_join the easiest and most appropriate way to merge data. This keeps all columns and rows present which we will need for future graphs and comparisons. No cases needed to be dropped since data was already tidy/ no NAs.</p>
 <pre class="r"><code>filtered &lt;- fj %&gt;% filter(Property_Damage &gt;= 7, Deaths.y &lt;= 4000, 
-    Year &gt; 1990) %&gt;% head()</code></pre>
-</div>
-<div id="creating-a-new-dataframe-filtered-that-creates-an-output-only-if-all-criteria-is-met-through-the-filtered-settings" class="section level1">
-<h1>Creating a new dataframe ‘filtered’ that creates an output only if all criteria is met through the filtered settings</h1>
+    Year &gt; 1990) %&gt;% head()
+# Creating a new dataframe ‘filtered’ that creates an output
+# only if all criteria is met through the filtered settings</code></pre>
 <p>*property damage is greater than or equal to seven billion, while house fire deaths (.y) are less than or equal to 4000 people, and the year must be greater than 1990.</p>
 <pre class="r"><code>fj %&gt;% select_if(is.numeric) %&gt;% select_if(~mean(.) &gt; 3500)</code></pre>
 <pre><code>## # A tibble: 59 x 3
@@ -118,9 +111,14 @@ view(fj)</code></pre>
 ##  9    50725   36967     6185
 ## 10    53543   36093     5200
 ## # … with 49 more rows</code></pre>
-</div>
-<div id="the-select_if-command-performs-an-operation-on-variables-that-satisfy-a-logical-criteria.-in-this-case-we-are-selecting-data-if-the-mode-is-numeric--whether-the-type-be-integer-or-double--and-then-within-the-numeric-columns-we-are-only-observing-data-if-the-average-is-greater-than-3500.-if-the-set-were-to-yield-missing-values-then-we-would-include-na.rmtrue-but-it-is-not-necessary-in-this-case." class="section level1">
-<h1>The select_if() command performs an operation on variables that satisfy a logical criteria. In this case we are selecting data <em>if</em> the mode is numeric -whether the type be integer or double-, and then within the numeric columns, we are only observing data if the average is greater than 3,500. If the set were to yield missing values, then we would include “(na.rm=TRUE)”, but it is not necessary in this case.</h1>
+<pre class="r"><code># The select_if() command performs an operation on variables
+# that satisfy a logical criteria. In this case we are
+# selecting data *if* the mode is numeric -whether the type
+# be integer or double-, and then within the numeric columns,
+# we are only observing data if the average is greater than
+# 3,500. If the set were to yield missing values, then we
+# would include “(na.rm=TRUE)”, but it is not necessary in
+# this case.</code></pre>
 <pre class="r"><code>fj %&gt;% arrange(Prevalent_Cause) %&gt;% head()</code></pre>
 <pre><code>## # A tibble: 6 x 7
 ##    Year Deaths.x Crashes Estimated_Drive… Property_Damage Deaths.y
@@ -132,24 +130,23 @@ view(fj)</code></pre>
 ## 5  1992    39250   34942             173.             8.3     4730
 ## 6  1961    36285   31600              92              3       6340
 ## # … with 1 more variable: Prevalent_Cause &lt;chr&gt;</code></pre>
-</div>
-<div id="the-full-joined-dataset-is-being-re-arranged-by-the-categorical-variable-describing-the-most-common-cause-of-house-fires-that-year-into-chunked-rows-for-a-different-way-of-visualizing-the-data." class="section level1">
-<h1>The full joined dataset is being re-arranged by the categorical variable describing the most common cause of house fires that year into chunked rows for a different way of visualizing the data.</h1>
-<p>*These ‘chunks’ include: children, cooking, electrical, flammables, and heating.</p>
+<pre class="r"><code># The full joined dataset is being re-arranged by the
+# categorical variable describing the most common cause of
+# house fires that year into chunked rows for a different way
+# of visualizing the data.</code></pre>
+<p>These ‘chunks’ include: children, cooking, electrical, flammables, and heating.</p>
 <pre class="r"><code>newvars &lt;- fj %&gt;% mutate(death_proportion = Deaths.y/Deaths.x, 
     pd_euros = Property_Damage * 0.85)
 newvars &lt;- newvars[-c(3, 4, 7)]
-view(newvars)</code></pre>
-</div>
-<div id="a-new-dataset-is-created-to-show-two-new-variables-from-two-different-mutations." class="section level1">
-<h1>A new dataset is created to show two new variables from two different mutations.</h1>
-<p>*The first mutation is the proportion of house fire deaths to motor vehicle deaths. The second mutation takes house fire property damage in U.S. dollars (billions) and converts to European currency.</p>
+view(newvars)
+# A new dataset is created to show two new variables from two
+# different mutations.</code></pre>
+<p>The first mutation is the proportion of house fire deaths to motor vehicle deaths. The second mutation takes house fire property damage in U.S. dollars (billions) and converts to European currency.</p>
 <pre class="r"><code>fj %&gt;% summarize_if(is.numeric, max) %&gt;% data.frame()</code></pre>
 <pre><code>##   Year Deaths.x Crashes Estimated_Drivers Property_Damage Deaths.y
 ## 1 2018    54589   45284               327              44     7710</code></pre>
-</div>
-<div id="data-is-summarized-by-the-maximum-value-in-each-numeric-category" class="section level1">
-<h1>Data is summarized by the maximum value in each numeric category</h1>
+<pre class="r"><code># Data is summarized by the maximum value in each numeric
+# category</code></pre>
 <pre class="r"><code>correlation &lt;- fj[-c(7)]
 cor(correlation, method = &quot;pearson&quot;, use = &quot;complete.obs&quot;)</code></pre>
 <pre><code>##                         Year   Deaths.x    Crashes Estimated_Drivers
@@ -246,10 +243,9 @@ knitr::kable(cortable)</code></pre>
 </tr>
 </tbody>
 </table>
-</div>
-<div id="correlation-between-all-numeric-variables-and-presented-in-a-table-using-kable" class="section level1">
-<h1>Correlation between all numeric variables and presented in a table using kable</h1>
-<p>*There is not much correlation. However there is a strong positive correlation between the estimated number of drivers and the year. As the years continue, there are more registered drivers.</p>
+<pre class="r"><code># Correlation between all numeric variables and presented in
+# a table using kable</code></pre>
+<p>There is not much correlation. However there is a strong positive correlation between the estimated number of drivers and the year. As the years continue, there are more registered drivers.</p>
 <pre class="r"><code>fjnumbers &lt;- fj[-c(1, 7)]
 summary &lt;- fjnumbers %&gt;% 
 summarise(avg_deathsx = mean(Deaths.x), min_deathsx = min(Deaths.x), 
@@ -264,13 +260,11 @@ summarise(avg_deathsx = mean(Deaths.x), min_deathsx = min(Deaths.x),
     total_Crashes = n(), avg_pd = mean(Property_Damage), min_pd = min(Property_Damage), 
     max_pd = max(Property_Damage), quant_pd = quantile(Property_Damage), 
     sd_pd = sd(Property_Damage), var_pd = var(Property_Damage), 
-    ndis_pd = n_distinct(Property_Damage), total_pd = n())</code></pre>
-</div>
-<div id="a-summary-of-statistics-on-all-numeric-variables." class="section level1">
-<h1>A summary of statistics on all numeric variables.</h1>
-<p>*average vehicle deaths: 43,234.54 minimum amount of vehicle deaths: 32,479 maximum amount of vehicle deaths: 54,589 quantile:32,479 standard deviation: 5833.071 variance: 34,024,714 distinct cases: 59 total: 59</p>
-<p>*average house fire deaths: 5,083 minimum amount of house fire deaths: 2,855 maximum amount of house fire deaths: 7,710 quantile: 2855 standard deviation: 1,424 variance: 2,028,811 distinct cases: 57 total: 59</p>
-<p>*average number of crashes: 37,034 minimum number of crashes: 29,867 maximum number of crashes: 45,284 quantile: 29,867 standard deviation: 3,768 variance:14,204,783 number of distinct crashes: 59 total: 59</p>
+    ndis_pd = n_distinct(Property_Damage), total_pd = n())
+# A summary of statistics on all numeric variables.</code></pre>
+<p>average vehicle deaths: 43,234.54 minimum amount of vehicle deaths: 32,479 maximum amount of vehicle deaths: 54,589 quantile:32,479 standard deviation: 5833.071 variance: 34,024,714 distinct cases: 59 total: 59</p>
+<p>average house fire deaths: 5,083 minimum amount of house fire deaths: 2,855 maximum amount of house fire deaths: 7,710 quantile: 2855 standard deviation: 1,424 variance: 2,028,811 distinct cases: 57 total: 59</p>
+<p>average number of crashes: 37,034 minimum number of crashes: 29,867 maximum number of crashes: 45,284 quantile: 29,867 standard deviation: 3,768 variance:14,204,783 number of distinct crashes: 59 total: 59</p>
 <p>*average property damage: $8.856 billion minimum property damage: $3 billion maximum property damage: $44 billion quantile: $8.2 billion standard deviation: $6.483 billion variance: 42.03 distinct cases: 50 total: 59</p>
 <pre class="r"><code>housefires %&gt;% group_by(Prevalent_Cause) %&gt;% 
 summarise(avg_housedeaths = mean(Deaths), min_housedeaths = min(Deaths), 
@@ -294,14 +288,12 @@ summarise(avg_housedeaths = mean(Deaths), min_housedeaths = min(Deaths),
 ## # … with 15 more rows, and 5 more variables: quant_housedeaths &lt;dbl&gt;,
 ## #   sd_housedeaths &lt;dbl&gt;, var_housedeaths &lt;dbl&gt;, ndis_housedeaths &lt;int&gt;,
 ## #   total &lt;int&gt;</code></pre>
-</div>
-<div id="summary-of-house-fire-deaths-grouped-by-the-prevalent-cause." class="section level1">
-<h1>Summary of house fire deaths grouped by the prevalent cause.</h1>
+<pre class="r"><code># Summary of house fire deaths grouped by the prevalent
+# cause.</code></pre>
 <pre class="r"><code>housefires$Category[housefires$Deaths &gt;= 3500] = &quot;High&quot;
-housefires$Category[housefires$Deaths &lt; 3500] = &quot;Low&quot;</code></pre>
-</div>
-<div id="adds-column-category-and-assigns-deaths-greater-than-or-equal-to-3500-as-high-and-less-than-3500-as-low" class="section level1">
-<h1>Adds column 'Category' and assigns deaths greater than or equal to 3,500 as high and less than 3,500 as low</h1>
+housefires$Category[housefires$Deaths &lt; 3500] = &quot;Low&quot;
+# Adds column &#39;Category&#39; and assigns deaths greater than or
+# equal to 3,500 as high and less than 3,500 as low</code></pre>
 <pre class="r"><code>housefires %&gt;% pivot_wider(names_from = Prevalent_Cause, values_from = Year, 
     values_fill = 0)</code></pre>
 <pre><code>## # A tibble: 59 x 8
@@ -318,15 +310,13 @@ housefires$Category[housefires$Deaths &lt; 3500] = &quot;Low&quot;</code></pre>
 ##  9             3.8   6185 High              0    1968       0          0
 ## 10             4     5200 High              0    1969       0          0
 ## # … with 49 more rows, and 1 more variable: children &lt;dbl&gt;</code></pre>
-</div>
-<div id="increases-number-of-columns-by-listing-each-prevalent-house-fire-cause-and-assigning-the-years-to-them." class="section level1">
-<h1>Increases number of columns by listing each prevalent house fire cause and assigning the years to them.</h1>
-<p>*So if the most common type of house fire was from cooking in 1960, then 1960 would go under that category along with other years when cooking was the most prevalent.</p>
+<pre class="r"><code># Increases number of columns by listing each prevalent house
+# fire cause and assigning the years to them.</code></pre>
+<p>So if the most common type of house fire was from cooking in 1960, then 1960 would go under that category along with other years when cooking was the most prevalent.</p>
 <pre class="r"><code>cars$Category[cars$Crashes &gt;= 35000] = &quot;High&quot;
-cars$Category[cars$Crashes &lt; 35000] = &quot;Low&quot;</code></pre>
-</div>
-<div id="categorizes-the-number-of-vehicle-crashes-into-high-if-there-are-35000-or-more-and-low-if-there-are-fewer." class="section level1">
-<h1>Categorizes the number of vehicle crashes into “High” if there are 35,000 or more and “Low” if there are fewer.</h1>
+cars$Category[cars$Crashes &lt; 35000] = &quot;Low&quot;
+# Categorizes the number of vehicle crashes into “High” if
+# there are 35,000 or more and “Low” if there are fewer.</code></pre>
 <pre class="r"><code>pivot_longer(cars, cols = c(&quot;Category&quot;), names_to = &quot;Death&quot;, 
     values_to = &quot;Year&quot;, names_repair = &quot;unique&quot;)</code></pre>
 <pre><code>## # A tibble: 59 x 6
@@ -343,16 +333,14 @@ cars$Category[cars$Crashes &lt; 35000] = &quot;Low&quot;</code></pre>
 ##  9     1968  50725   36967             108.  Category High    
 ## 10     1969  53543   36093             112.  Category High    
 ## # … with 49 more rows</code></pre>
-</div>
-<div id="increases-the-number-of-rows" class="section level1">
-<h1>Increases the number of rows</h1>
+<pre class="r"><code># Increases the number of rows</code></pre>
 <pre class="r"><code>house &lt;- housefires %&gt;% group_by(Category) %&gt;% summarise(min_pc = min(Prevalent_Cause), 
     max_pc = max(Prevalent_Cause), ndis_pc = n_distinct(Prevalent_Cause), 
-    total = n())</code></pre>
-</div>
-<div id="two-categorical-variables-are-related-through-summarizing-the-data-on-the-common-cause-of-fire-displayed-within-the-groups-high-or-low-amount-of-deaths." class="section level1">
-<h1>Two categorical variables are related through summarizing the data on the common cause of fire displayed within the groups ‘high’ or ‘low’ amount of deaths.</h1>
-<p>*With 3,500 or more deaths, the least common cause of a house fire was due to children and the most common cause was from heating a house. With fewer than 3,500 deaths, the least common cause of fires was cooking and the most common was heating the house (again). The number of unique variables grouped by high death rate is 6 and for low death rate is 3. The total number of observations for high amounts of deaths is 46 and low amounts of deaths, 13.</p>
+    total = n())
+# Two categorical variables are related through summarizing
+# the data on the common cause of fire displayed within the
+# groups ‘high’ or ‘low’ amount of deaths.</code></pre>
+<p>With 3,500 or more deaths, the least common cause of a house fire was due to children and the most common cause was from heating a house. With fewer than 3,500 deaths, the least common cause of fires was cooking and the most common was heating the house (again). The number of unique variables grouped by high death rate is 6 and for low death rate is 3. The total number of observations for high amounts of deaths is 46 and low amounts of deaths, 13.</p>
 <pre class="r"><code>summary(correlation)</code></pre>
 <pre><code>##       Year         Deaths.x        Crashes      Estimated_Drivers
 ##  Min.   :1960   Min.   :32479   Min.   :29867   Min.   : 88.9    
@@ -383,9 +371,8 @@ cars$Category[cars$Crashes &lt; 35000] = &quot;Low&quot;</code></pre>
 ##                59                59                59                58 
 ##   Property_Damage          Deaths.y 
 ##                50                57</code></pre>
-</div>
-<div id="utilizes-the-correlation-dataset-to-produce-all-statistics-for-numeric-variables-by-column" class="section level1">
-<h1>Utilizes the ‘correlation’ dataset to produce all statistics for numeric variables by column</h1>
+<pre class="r"><code># Utilizes the ‘correlation’ dataset to produce all
+# statistics for numeric variables by column</code></pre>
 <pre class="r"><code>library(corrplot)
 library(ggplot2)
 
@@ -436,19 +423,23 @@ ggheatmap +
         legend.direction = &quot;horizontal&quot;)+
     guides(fill = guide_colorbar(barwidth = 7, barheight = 1,
                                  title.position = &quot;top&quot;, title.hjust = 0.5))</code></pre>
-<p><img src="../../project/project1_files/figure-html/unnamed-chunk-18-1.png" width="672" style="display: block; margin: auto;" /> #Produces Pearson correlation map to easily view the correlation between all numberic variable. *There are some trends shown on the Pearson correlation graph. There is a small positive correlation between the number of deaths due to crahses and deaths due to housefires. There is another positive correlation between property damage and the year. Additionally, there is a negative correlation between the number of house fire deaths and the year which could support the idea that safety features on technology and appliances has increased to prevent fires.</p>
+<p><img src="../../project/project1_files/figure-html/unnamed-chunk-18-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>#Produces Pearson correlation map to easily view the correlation between all numberic variable.</code></pre>
+<p>There are some trends shown on the Pearson correlation graph. There is a small positive correlation between the number of deaths due to crahses and deaths due to housefires. There is another positive correlation between property damage and the year. Additionally, there is a negative correlation between the number of house fire deaths and the year which could support the idea that safety features on technology and appliances has increased to prevent fires.</p>
 <pre class="r"><code>fj %&gt;% ggplot(aes(x = Prevalent_Cause, y = Property_Damage, fill = Prevalent_Cause, 
     color = &quot;black&quot;)) + geom_boxplot() + theme(legend.position = &quot;bottom&quot;) + 
     ggtitle(&quot;Distribution of Property Damage Cost in U.S. Billions by Fire Type&quot;)</code></pre>
-<p><img src="../../project/project1_files/figure-html/unnamed-chunk-19-1.png" width="672" style="display: block; margin: auto;" /> #Boxplots</p>
-<p>*Boxplots comparing trends in property damage as categorized by type of fire. There are three outliers for the amount of property damage, two of which fall under cooking which could skew the data. Flammables caused the least amount of propery damage expenses while all other categories are failry similar in costs.</p>
+<p><img src="../../project/project1_files/figure-html/unnamed-chunk-19-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># Boxplots</code></pre>
+<p>Boxplots comparing trends in property damage as categorized by type of fire. There are three outliers for the amount of property damage, two of which fall under cooking which could skew the data. Flammables caused the least amount of propery damage expenses while all other categories are failry similar in costs.</p>
 <pre class="r"><code>ggplot(housefires, aes(x = Year, y = Property_Damage, color = Category)) + 
     geom_point(size = 3, alpha = 0.5) + geom_line() + theme(legend.position = &quot;bottom&quot;) + 
     ggtitle(&quot;Property Damage by Year&quot;) + xlab(&quot;Year&quot;) + ylab(&quot;Reported Property Damage (billions)&quot;) + 
     scale_y_continuous(breaks = seq(0, 45, 5)) + stat_summary(fun = mean, 
     color = &quot;black&quot;, size = 0.5)</code></pre>
-<p><img src="../../project/project1_files/figure-html/unnamed-chunk-20-1.png" width="672" style="display: block; margin: auto;" /> #Point plot</p>
-<p>*A different way of showing property damage trends throughout the years, but instead, categorized by high and low amounts of deaths. There have been a lower amount of house fire deaths from 2000 onward.This graph also shows that property damage has steadily increased over the years. This could be due to inflation in the US Economy.</p>
+<p><img src="../../project/project1_files/figure-html/unnamed-chunk-20-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># Point plot</code></pre>
+<p>A different way of showing property damage trends throughout the years, but instead, categorized by high and low amounts of deaths. There have been a lower amount of house fire deaths from 2000 onward.This graph also shows that property damage has steadily increased over the years. This could be due to inflation in the US Economy.</p>
 <pre class="r"><code>library(cluster)
 library(factoextra)
 
@@ -462,7 +453,6 @@ plot(pamfj)</code></pre>
 <p>*Three clusters is best because it is most uniformly grouped. The silhouette graphs help measure how close each point in one cluster is to points in the neighboring clusters. A trong structure is found between 0.71 to 1.00. A reasonable structure lies between 0.51 to 0.70. A weak structure is about 0.26 to 0.50. There is no substantial structure if between -1 to 0.25.In this case, two clusters have a reasonable structure with values of 0.54 while the third has a weak structre with a value of 0.35.</p>
 <pre class="r"><code>autoplot(pam(fjnumbers, 3), frame = TRUE, frame.type = &quot;norm&quot;)</code></pre>
 <p><img src="../../project/project1_files/figure-html/unnamed-chunk-22-1.png" width="672" style="display: block; margin: auto;" /></p>
-</div>
 
             
         <hr>         <div class="related-posts">

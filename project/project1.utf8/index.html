@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="Madelyn Oliveri" />
+    
+    <link rel="shortcut icon" type="image/x-icon" href="../../img/favicon.ico">
+    <title>Project 1: Exploratory Data Analysis</title>
+    <meta name="generator" content="Hugo 0.79.0" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="../../css/main.css" />
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,400,200bold,400old" />
+    
+    <!--[if lt IE 9]>
+			<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+			<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+		<![endif]-->
+
+    
+  </head>
+
+  <body>
+    <div id="wrap">
+      
+      <nav class="navbar navbar-default">
+  <div class="container">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="../../"><i class="fa fa-home"></i></a>
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <div class="navbar-collapse collapse" id="navbar">
+      <ul class="nav navbar-nav navbar-right">
+      
+        
+        <li><a href="../../post/">BLOG</a></li>
+        
+        <li><a href="../../projects/">PROJECTS</a></li>
+        
+        <li><a href="../../resume/">RESUME</a></li>
+        
+      
+      </ul>
+    </div>
+  </div>
+</nav>
+
+      <div class="container">
+        <div class="blog-post">
+          <h3>
+            <strong><a href="../../project/project1.utf8/">Project 1: Exploratory Data Analysis</a></strong>
+          </h3>
+        </div>
+ 
+<div class="blog-title">
+          <h4>
+         January 1, 0001 
+            &nbsp;&nbsp;
+            
+          </h4>
+        </div>
+
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <div class="blogpost">
+              <p>In this study I will be comparing motor vehicle data alongside U.S civilian house fire data; in-particular, examining trends in the number of deaths over the years from each type of accident, with the common variable being the year (1960-2018). Motor vehicle accident data was collected from the Bureau of Transportation Statistics which includes motorcycles while excluding commercial vehicles. It includes the number of crashes, the total number of deaths (presented as Deaths.x), as well as the estimated number of registered drivers (in millions). House-fire data was retrieved from the National Fire Protection Association research articles on “Home Structure Fires”. The variables include the most-prevalent cause of fire (such as electrical, cooking, etc.), reported property damage (in U.S. billions), and the total number of deaths each year (presented as ‘Deaths.y’) which are all categorized by yearly totals.</p>
+<p>I am interested in this data due to the last decade’s rapid advancement in technology. Two potential associations I expect could be an increase in vehicle crashes and deaths due to distracted driving (texting, social apps, etc.)  while a decrease in house fires from these same advancements. This predicted trend may be valid as safety policies, and therefore, safety features on appliances improve to protect against accidental house fires.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r"><span style="color:#a6e22e">library</span>(tidyverse)
+<span style="color:#a6e22e">library</span>(dplyr)
+<span style="color:#a6e22e">library</span>(ggplot2)
+
+<span style="color:#a6e22e">library</span>(readr)  <span style="color:#75715e">#Load and name datasets</span>
+cars <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">read_csv</span>(<span style="color:#e6db74">&#34;cars.csv&#34;</span>)
+
+housefires <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">read_csv</span>(<span style="color:#e6db74">&#34;housefires.csv&#34;</span>)
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r">cars<span style="color:#f92672">$</span>Year <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">as.numeric</span>(<span style="color:#a6e22e">as.double</span>(cars<span style="color:#f92672">$</span>Year))
+housefires<span style="color:#f92672">$</span>Year <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">as.numeric</span>(<span style="color:#a6e22e">as.character</span>(housefires<span style="color:#f92672">$</span>Year))
+<span style="color:#75715e"># Convert ‘double’ type to numeric, convert ‘character’ value</span>
+<span style="color:#75715e"># to numeric</span>
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r">fj <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">full_join</span>(cars, housefires, by <span style="color:#f92672">=</span> <span style="color:#a6e22e">c</span>(Year <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;Year&#34;</span>))
+<span style="color:#a6e22e">view</span>(fj)
+</code></pre></div><p>The common variable is &lsquo;year&rsquo;, with only one observation per year, per column. Additionally both datasets contain similar numeric categories with only one categorical variable present, making a full_join the easiest and most appropriate way to merge data. This keeps all columns and rows present which we will need for future graphs and comparisons. No cases needed to be dropped since data was already tidy/ no NAs.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r">filtered <span style="color:#f92672">&lt;-</span> fj <span style="color:#f92672">%&gt;%</span> <span style="color:#a6e22e">filter</span>(Property_Damage <span style="color:#f92672">&gt;=</span> <span style="color:#ae81ff">7</span>, Deaths.y <span style="color:#f92672">&lt;=</span> <span style="color:#ae81ff">4000</span>, 
+    Year <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">1990</span>) <span style="color:#f92672">%&gt;%</span> <span style="color:#a6e22e">head</span>()
+<span style="color:#75715e"># Creating a new dataframe ‘filtered’ that creates an output</span>
+<span style="color:#75715e"># only if all criteria is met through the filtered settings</span>
+</code></pre></div><p>*property damage is greater than or equal to seven billion, while house fire deaths (.y) are less than or equal to 4000 people, and the year must be greater than 1990.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r">fj <span style="color:#f92672">%&gt;%</span> <span style="color:#a6e22e">select_if</span>(is.numeric) <span style="color:#f92672">%&gt;%</span> <span style="color:#a6e22e">select_if</span>(<span style="color:#f92672">~</span><span style="color:#a6e22e">mean</span>(.) <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">3500</span>)
+</code></pre></div><pre><code>## # A tibble: 59 x 3
+##    Deaths.x Crashes Deaths.y
+##       &lt;dbl&gt;   &lt;dbl&gt;    &lt;dbl&gt;
+##  1    36399   31399     5545
+##  2    36285   31600     6340
+##  3    38980   33010     6400
+##  4    41723   33477     5890
+##  5    45645   35203     5995
+##  6    47089   35482     6685
+##  7    50894   34886     6700
+##  8    50724   35220     5225
+##  9    50725   36967     6185
+## 10    53543   36093     5200
+## # … with 49 more rows
+</code></pre><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r"><span style="color:#75715e"># The select_if() command performs an operation on variables</span>
+<span style="color:#75715e"># that satisfy a logical criteria. In this case we are</span>
+<span style="color:#75715e"># selecting data *if* the mode is numeric -whether the type</span>
+<span style="color:#75715e"># be integer or double-, and then within the numeric columns,</span>
+<span style="color:#75715e"># we are only observing data if the average is greater than</span>
+<span style="color:#75715e"># 3,500. If the set were to yield missing values, then we</span>
+<span style="color:#75715e"># would include “(na.rm=TRUE)”, but it is not necessary in</span>
+<span style="color:#75715e"># this case.</span>
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r">fj <span style="color:#f92672">%&gt;%</span> <span style="color:#a6e22e">arrange</span>(Prevalent_Cause) <span style="color:#f92672">%&gt;%</span> <span style="color:#a6e22e">head</span>()
+</code></pre></div><pre><code>## # A tibble: 6 x 7
+##    Year Deaths.x Crashes Estimated_Drive… Property_Damage Deaths.y
+##   &lt;dbl&gt;    &lt;dbl&gt;   &lt;dbl&gt;            &lt;dbl&gt;           &lt;dbl&gt;    &lt;dbl&gt;
+## 1  1966    50894   34886             103.             3.5     6700
+## 2  1971    52542   36999             118.             3.9     6540
+## 3  1980    51091   45284             147.             6.3     6505
+## 4  1987    46390   41438             163.             7.2     5810
+## 5  1992    39250   34942             173.             8.3     4730
+## 6  1961    36285   31600              92              3       6340
+## # … with 1 more variable: Prevalent_Cause &lt;chr&gt;
+</code></pre><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r"><span style="color:#75715e"># The full joined dataset is being re-arranged by the</span>
+<span style="color:#75715e"># categorical variable describing the most common cause of</span>
+<span style="color:#75715e"># house fires that year into chunked rows for a different way</span>
+<span style="color:#75715e"># of visualizing the data.</span>
+</code></pre></div><p>These ‘chunks’ include: children, cooking, electrical, flammables, and heating.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r">newvars <span style="color:#f92672">&lt;-</span> fj <span style="color:#f92672">%&gt;%</span> <span style="color:#a6e22e">mutate</span>(death_proportion <span style="color:#f92672">=</span> Deaths.y<span style="color:#f92672">/</span>Deaths.x, 
+    pd_euros <span style="color:#f92672">=</span> Property_Damage <span style="color:#f92672">*</span> <span style="color:#ae81ff">0.85</span>)
+newvars <span style="color:#f92672">&lt;-</span> newvars[<span style="color:#f92672">-</span><span style="color:#a6e22e">c</span>(<span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">4</span>, <span style="color:#ae81ff">7</span>)]
+<span style="color:#a6e22e">view</span>(newvars)
+<span style="color:#75715e"># A new dataset is created to show two new variables from two</span>
+<span style="color:#75715e"># different mutations.</span>
+</code></pre></div><p>The first mutation is the proportion of house fire deaths to motor vehicle deaths. The second mutation takes house fire property damage in U.S. dollars (billions) and converts to European currency.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r">fj <span style="color:#f92672">%&gt;%</span> <span style="color:#a6e22e">summarize_if</span>(is.numeric, max) <span style="color:#f92672">%&gt;%</span> <span style="color:#a6e22e">data.frame</span>()
+</code></pre></div><pre><code>##   Year Deaths.x Crashes Estimated_Drivers Property_Damage Deaths.y
+## 1 2018    54589   45284               327              44     7710
+</code></pre><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r"><span style="color:#75715e"># Data is summarized by the maximum value in each numeric</span>
+<span style="color:#75715e"># category</span>
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r">correlation <span style="color:#f92672">&lt;-</span> fj[<span style="color:#f92672">-</span><span style="color:#a6e22e">c</span>(<span style="color:#ae81ff">7</span>)]
+<span style="color:#a6e22e">cor</span>(correlation, method <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;pearson&#34;</span>, use <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;complete.obs&#34;</span>)
+</code></pre></div><pre><code>##                         Year   Deaths.x    Crashes Estimated_Drivers
+## Year               1.0000000 -0.6509865 -0.2664422         0.9618342
+## Deaths.x          -0.6509865  1.0000000  0.7183493        -0.5927106
+## Crashes           -0.2664422  0.7183493  1.0000000        -0.1891954
+## Estimated_Drivers  0.9618342 -0.5927106 -0.1891954         1.0000000
+## Property_Damage    0.6780387 -0.4266316 -0.1706282         0.7025535
+## Deaths.y          -0.8300523  0.7172055  0.5666570        -0.7542348
+##                   Property_Damage   Deaths.y
+## Year                    0.6780387 -0.8300523
+## Deaths.x               -0.4266316  0.7172055
+## Crashes                -0.1706282  0.5666570
+## Estimated_Drivers       0.7025535 -0.7542348
+## Property_Damage         1.0000000 -0.4448266
+## Deaths.y               -0.4448266  1.0000000
+</code></pre><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r">cortable <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">cor</span>(correlation, method <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;pearson&#34;</span>, use <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;complete.obs&#34;</span>)
+knitr<span style="color:#f92672">::</span><span style="color:#a6e22e">kable</span>(cortable)
+</code></pre></div><table>
+<thead>
+<tr>
+<th style="text-align:left"></th>
+<th style="text-align:right">Year</th>
+<th style="text-align:right">Deaths.x</th>
+<th style="text-align:right">Crashes</th>
+<th style="text-align:right">Estimated_Drivers</th>
+<th style="text-align:right">Property_Damage</th>
+<th style="text-align:right">Deaths.y</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">Year</td>
+<td style="text-align:right">1.0000000</td>
+<td style="text-align:right">-0.6509865</td>
+<td style="text-align:right">-0.2664422</td>
+<td style="text-align:right">0.9618342</td>
+<td style="text-align:right">0.6780387</td>
+<td style="text-align:right">-0.8300523</td>
+</tr>
+<tr>
+<td style="text-align:left">Deaths.x</td>
+<td style="text-align:right">-0.6509865</td>
+<td style="text-align:right">1.0000000</td>
+<td style="text-align:right">0.7183493</td>
+<td style="text-align:right">-0.5927106</td>
+<td style="text-align:right">-0.4266316</td>
+<td style="text-align:right">0.7172055</td>
+</tr>
+<tr>
+<td style="text-align:left">Crashes</td>
+<td style="text-align:right">-0.2664422</td>
+<td style="text-align:right">0.7183493</td>
+<td style="text-align:right">1.0000000</td>
+<td style="text-align:right">-0.1891954</td>
+<td style="text-align:right">-0.1706282</td>
+<td style="text-align:right">0.5666570</td>
+</tr>
+<tr>
+<td style="text-align:left">Estimated_Drivers</td>
+<td style="text-align:right">0.9618342</td>
+<td style="text-align:right">-0.5927106</td>
+<td style="text-align:right">-0.1891954</td>
+<td style="text-align:right">1.0000000</td>
+<td style="text-align:right">0.7025535</td>
+<td style="text-align:right">-0.7542348</td>
+</tr>
+<tr>
+<td style="text-align:left">Property_Damage</td>
+<td style="text-align:right">0.6780387</td>
+<td style="text-align:right">-0.4266316</td>
+<td style="text-align:right">-0.1706282</td>
+<td style="text-align:right">0.7025535</td>
+<td style="text-align:right">1.0000000</td>
+<td style="text-align:right">-0.4448266</td>
+</tr>
+<tr>
+<td style="text-align:left">Deaths.y</td>
+<td style="text-align:right">-0.8300523</td>
+<td style="text-align:right">0.7172055</td>
+<td style="text-align:right">0.5666570</td>
+<td style="text-align:right">-0.7542348</td>
+<td style="text-align:right">-0.4448266</td>
+<td style="text-align:right">1.0000000</td>
+</tr>
+</tbody>
+</table>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r"><span style="color:#75715e"># Correlation between all numeric variables and presented in</span>
+<span style="color:#75715e"># a table using kable</span>
+</code></pre></div><p>There is not much correlation. However there is a strong positive correlation between the estimated number of drivers and the year. As the years continue, there are more registered drivers.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r">fjnumbers <span style="color:#f92672">&lt;-</span> fj[<span style="color:#f92672">-</span><span style="color:#a6e22e">c</span>(<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">7</span>)]
+summary <span style="color:#f92672">&lt;-</span> fjnumbers <span style="color:#f92672">%&gt;%</span> 
+<span style="color:#a6e22e">summarise</span>(avg_deathsx <span style="color:#f92672">=</span> <span style="color:#a6e22e">mean</span>(Deaths.x), min_deathsx <span style="color:#f92672">=</span> <span style="color:#a6e22e">min</span>(Deaths.x), 
+    max_deathsx <span style="color:#f92672">=</span> <span style="color:#a6e22e">max</span>(Deaths.x), quant_deathsx <span style="color:#f92672">=</span> <span style="color:#a6e22e">quantile</span>(Deaths.x), 
+    sd_deathsx <span style="color:#f92672">=</span> <span style="color:#a6e22e">sd</span>(Deaths.x), var_deathsx <span style="color:#f92672">=</span> <span style="color:#a6e22e">var</span>(Deaths.x), ndis_deathsx <span style="color:#f92672">=</span> <span style="color:#a6e22e">n_distinct</span>(Deaths.x), 
+    total_deathsx <span style="color:#f92672">=</span> <span style="color:#a6e22e">n</span>(), avg_deathsy <span style="color:#f92672">=</span> <span style="color:#a6e22e">mean</span>(Deaths.y), min_deathsy <span style="color:#f92672">=</span> <span style="color:#a6e22e">min</span>(Deaths.y), 
+    max_deathsy <span style="color:#f92672">=</span> <span style="color:#a6e22e">max</span>(Deaths.y), quant_deathsy <span style="color:#f92672">=</span> <span style="color:#a6e22e">quantile</span>(Deaths.y), 
+    sd_deathsy <span style="color:#f92672">=</span> <span style="color:#a6e22e">sd</span>(Deaths.y), var_deathsy <span style="color:#f92672">=</span> <span style="color:#a6e22e">var</span>(Deaths.y), ndis_deathsy <span style="color:#f92672">=</span> <span style="color:#a6e22e">n_distinct</span>(Deaths.y), 
+    total_deathsy <span style="color:#f92672">=</span> <span style="color:#a6e22e">n</span>(), avg_Crashes <span style="color:#f92672">=</span> <span style="color:#a6e22e">mean</span>(Crashes), min_Crashes <span style="color:#f92672">=</span> <span style="color:#a6e22e">min</span>(Crashes), 
+    max_Crashes <span style="color:#f92672">=</span> <span style="color:#a6e22e">max</span>(Crashes), quant_Crashes <span style="color:#f92672">=</span> <span style="color:#a6e22e">quantile</span>(Crashes), 
+    sd_Crashes <span style="color:#f92672">=</span> <span style="color:#a6e22e">sd</span>(Crashes), var_Crashes <span style="color:#f92672">=</span> <span style="color:#a6e22e">var</span>(Crashes), ndis_Crashes <span style="color:#f92672">=</span> <span style="color:#a6e22e">n_distinct</span>(Crashes), 
+    total_Crashes <span style="color:#f92672">=</span> <span style="color:#a6e22e">n</span>(), avg_pd <span style="color:#f92672">=</span> <span style="color:#a6e22e">mean</span>(Property_Damage), min_pd <span style="color:#f92672">=</span> <span style="color:#a6e22e">min</span>(Property_Damage), 
+    max_pd <span style="color:#f92672">=</span> <span style="color:#a6e22e">max</span>(Property_Damage), quant_pd <span style="color:#f92672">=</span> <span style="color:#a6e22e">quantile</span>(Property_Damage), 
+    sd_pd <span style="color:#f92672">=</span> <span style="color:#a6e22e">sd</span>(Property_Damage), var_pd <span style="color:#f92672">=</span> <span style="color:#a6e22e">var</span>(Property_Damage), 
+    ndis_pd <span style="color:#f92672">=</span> <span style="color:#a6e22e">n_distinct</span>(Property_Damage), total_pd <span style="color:#f92672">=</span> <span style="color:#a6e22e">n</span>())
+<span style="color:#75715e"># A summary of statistics on all numeric variables.</span>
+</code></pre></div><p>average vehicle deaths: 43,234.54
+minimum amount of vehicle deaths: 32,479
+maximum amount of vehicle deaths: 54,589
+quantile:32,479
+standard deviation: 5833.071
+variance: 34,024,714
+distinct cases: 59
+total: 59</p>
+<p>average house fire deaths: 5,083
+minimum amount of house fire deaths: 2,855
+maximum amount of house fire deaths: 7,710
+quantile: 2855
+standard deviation: 1,424
+variance: 2,028,811
+distinct cases: 57
+total: 59</p>
+<p>average number of crashes: 37,034
+minimum number of crashes: 29,867
+maximum number of crashes: 45,284
+quantile: 29,867
+standard deviation: 3,768
+variance:14,204,783
+number of distinct crashes: 59
+total: 59</p>
+<p>*average property damage: $8.856 billion
+minimum property damage: $3 billion
+maximum property damage: $44 billion
+quantile: $8.2 billion
+standard deviation: $6.483 billion
+variance: 42.03
+distinct cases: 50
+total: 59</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r">housefires <span style="color:#f92672">%&gt;%</span> <span style="color:#a6e22e">group_by</span>(Prevalent_Cause) <span style="color:#f92672">%&gt;%</span> 
+<span style="color:#a6e22e">summarise</span>(avg_housedeaths <span style="color:#f92672">=</span> <span style="color:#a6e22e">mean</span>(Deaths), min_housedeaths <span style="color:#f92672">=</span> <span style="color:#a6e22e">min</span>(Deaths), 
+    max_housedeaths <span style="color:#f92672">=</span> <span style="color:#a6e22e">max</span>(Deaths), quant_housedeaths <span style="color:#f92672">=</span> <span style="color:#a6e22e">quantile</span>(Deaths), 
+    sd_housedeaths <span style="color:#f92672">=</span> <span style="color:#a6e22e">sd</span>(Deaths), var_housedeaths <span style="color:#f92672">=</span> <span style="color:#a6e22e">var</span>(Deaths), 
+    ndis_housedeaths <span style="color:#f92672">=</span> <span style="color:#a6e22e">n_distinct</span>(Deaths), total <span style="color:#f92672">=</span> <span style="color:#a6e22e">n</span>())
+</code></pre></div><pre><code>## # A tibble: 25 x 9
+## # Groups:   Prevalent_Cause [5]
+##    Prevalent_Cause avg_housedeaths min_housedeaths max_housedeaths
+##    &lt;chr&gt;                     &lt;dbl&gt;           &lt;dbl&gt;           &lt;dbl&gt;
+##  1 children                  6057             4730            6700
+##  2 children                  6057             4730            6700
+##  3 children                  6057             4730            6700
+##  4 children                  6057             4730            6700
+##  5 children                  6057             4730            6700
+##  6 cooking                   5228.            3275            7395
+##  7 cooking                   5228.            3275            7395
+##  8 cooking                   5228.            3275            7395
+##  9 cooking                   5228.            3275            7395
+## 10 cooking                   5228.            3275            7395
+## # … with 15 more rows, and 5 more variables: quant_housedeaths &lt;dbl&gt;,
+## #   sd_housedeaths &lt;dbl&gt;, var_housedeaths &lt;dbl&gt;, ndis_housedeaths &lt;int&gt;,
+## #   total &lt;int&gt;
+</code></pre><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r"><span style="color:#75715e"># Summary of house fire deaths grouped by the prevalent</span>
+<span style="color:#75715e"># cause.</span>
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r">housefires<span style="color:#f92672">$</span>Category[housefires<span style="color:#f92672">$</span>Deaths <span style="color:#f92672">&gt;=</span> <span style="color:#ae81ff">3500</span>] <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;High&#34;</span>
+housefires<span style="color:#f92672">$</span>Category[housefires<span style="color:#f92672">$</span>Deaths <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">3500</span>] <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;Low&#34;</span>
+<span style="color:#75715e"># Adds column &#39;Category&#39; and assigns deaths greater than or</span>
+<span style="color:#75715e"># equal to 3,500 as high and less than 3,500 as low</span>
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r">housefires <span style="color:#f92672">%&gt;%</span> <span style="color:#a6e22e">pivot_wider</span>(names_from <span style="color:#f92672">=</span> Prevalent_Cause, values_from <span style="color:#f92672">=</span> Year, 
+    values_fill <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>)
+</code></pre></div><pre><code>## # A tibble: 59 x 8
+##    Property_Damage Deaths Category flammables cooking heating electrical
+##              &lt;dbl&gt;  &lt;dbl&gt; &lt;chr&gt;         &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;      &lt;dbl&gt;
+##  1             3.2   5545 High           1960       0       0          0
+##  2             3     6340 High              0    1961       0          0
+##  3             3.4   6400 High              0    1962       0          0
+##  4             3.3   5890 High              0       0    1963          0
+##  5             3.5   5995 High              0    1964       0          0
+##  6             4     6685 High              0       0       0       1965
+##  7             3.5   6700 High              0       0       0          0
+##  8             3.6   5225 High           1967       0       0          0
+##  9             3.8   6185 High              0    1968       0          0
+## 10             4     5200 High              0    1969       0          0
+## # … with 49 more rows, and 1 more variable: children &lt;dbl&gt;
+</code></pre><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r"><span style="color:#75715e"># Increases number of columns by listing each prevalent house</span>
+<span style="color:#75715e"># fire cause and assigning the years to them.</span>
+</code></pre></div><p>So if the most common type of house fire was from cooking in 1960, then 1960 would go under that category along with other years when cooking was the most prevalent.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r">cars<span style="color:#f92672">$</span>Category[cars<span style="color:#f92672">$</span>Crashes <span style="color:#f92672">&gt;=</span> <span style="color:#ae81ff">35000</span>] <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;High&#34;</span>
+cars<span style="color:#f92672">$</span>Category[cars<span style="color:#f92672">$</span>Crashes <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">35000</span>] <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;Low&#34;</span>
+<span style="color:#75715e"># Categorizes the number of vehicle crashes into “High” if</span>
+<span style="color:#75715e"># there are 35,000 or more and “Low” if there are fewer.</span>
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r"><span style="color:#a6e22e">pivot_longer</span>(cars, cols <span style="color:#f92672">=</span> <span style="color:#a6e22e">c</span>(<span style="color:#e6db74">&#34;Category&#34;</span>), names_to <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;Death&#34;</span>, 
+    values_to <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;Year&#34;</span>, names_repair <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;unique&#34;</span>)
+</code></pre></div><pre><code>## # A tibble: 59 x 6
+##    Year...1 Deaths Crashes Estimated_Drivers Death    Year...6
+##       &lt;dbl&gt;  &lt;dbl&gt;   &lt;dbl&gt;             &lt;dbl&gt; &lt;chr&gt;    &lt;chr&gt;   
+##  1     1960  36399   31399              88.9 Category Low     
+##  2     1961  36285   31600              92   Category Low     
+##  3     1962  38980   33010              93.7 Category Low     
+##  4     1963  41723   33477              95.6 Category Low     
+##  5     1964  45645   35203              99   Category High    
+##  6     1965  47089   35482             101   Category High    
+##  7     1966  50894   34886             103.  Category Low     
+##  8     1967  50724   35220             105.  Category High    
+##  9     1968  50725   36967             108.  Category High    
+## 10     1969  53543   36093             112.  Category High    
+## # … with 49 more rows
+</code></pre><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r"><span style="color:#75715e"># Increases the number of rows</span>
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r">house <span style="color:#f92672">&lt;-</span> housefires <span style="color:#f92672">%&gt;%</span> <span style="color:#a6e22e">group_by</span>(Category) <span style="color:#f92672">%&gt;%</span> <span style="color:#a6e22e">summarise</span>(min_pc <span style="color:#f92672">=</span> <span style="color:#a6e22e">min</span>(Prevalent_Cause), 
+    max_pc <span style="color:#f92672">=</span> <span style="color:#a6e22e">max</span>(Prevalent_Cause), ndis_pc <span style="color:#f92672">=</span> <span style="color:#a6e22e">n_distinct</span>(Prevalent_Cause), 
+    total <span style="color:#f92672">=</span> <span style="color:#a6e22e">n</span>())
+<span style="color:#75715e"># Two categorical variables are related through summarizing</span>
+<span style="color:#75715e"># the data on the common cause of fire displayed within the</span>
+<span style="color:#75715e"># groups ‘high’ or ‘low’ amount of deaths.</span>
+</code></pre></div><p>With 3,500 or more deaths, the least common cause of a house fire was due to children and the most common cause was from heating a house. With fewer than 3,500 deaths, the least common cause of fires was cooking and the most common was heating the house (again). The number of unique variables grouped by high death rate is 6 and for low death rate is 3. The total number of observations for high amounts of deaths is 46 and low amounts of deaths, 13.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r"><span style="color:#a6e22e">summary</span>(correlation)
+</code></pre></div><pre><code>##       Year         Deaths.x        Crashes      Estimated_Drivers
+##  Min.   :1960   Min.   :32479   Min.   :29867   Min.   : 88.9    
+##  1st Qu.:1974   1st Qu.:39700   1st Qu.:34853   1st Qu.:131.8    
+##  Median :1989   Median :42836   Median :37324   Median :167.0    
+##  Mean   :1989   Mean   :43235   Mean   :37034   Mean   :165.6    
+##  3rd Qu.:2004   3rd Qu.:46738   3rd Qu.:39126   3rd Qu.:199.8    
+##  Max.   :2018   Max.   :54589   Max.   :45284   Max.   :327.0    
+##  Property_Damage     Deaths.y   
+##  Min.   : 3.000   Min.   :2855  
+##  1st Qu.: 4.250   1st Qu.:3665  
+##  Median : 8.200   Median :5200  
+##  Mean   : 8.856   Mean   :5083  
+##  3rd Qu.:10.950   3rd Qu.:6206  
+##  Max.   :44.000   Max.   :7710
+</code></pre><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r"><span style="color:#a6e22e">apply</span>(correlation, <span style="color:#ae81ff">2</span>, sd)
+</code></pre></div><pre><code>##              Year          Deaths.x           Crashes Estimated_Drivers 
+##         17.175564       5833.070722       3768.923273         45.770936 
+##   Property_Damage          Deaths.y 
+##          6.483674       1424.363469
+</code></pre><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r"><span style="color:#a6e22e">apply</span>(correlation, <span style="color:#ae81ff">2</span>, var)
+</code></pre></div><pre><code>##              Year          Deaths.x           Crashes Estimated_Drivers 
+##      2.950000e+02      3.402471e+07      1.420478e+07      2.094979e+03 
+##   Property_Damage          Deaths.y 
+##      4.203802e+01      2.028811e+06
+</code></pre><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r"><span style="color:#a6e22e">apply</span>(correlation, <span style="color:#ae81ff">2</span>, n_distinct)
+</code></pre></div><pre><code>##              Year          Deaths.x           Crashes Estimated_Drivers 
+##                59                59                59                58 
+##   Property_Damage          Deaths.y 
+##                50                57
+</code></pre><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r"><span style="color:#75715e"># Utilizes the ‘correlation’ dataset to produce all</span>
+<span style="color:#75715e"># statistics for numeric variables by column</span>
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r"><span style="color:#a6e22e">library</span>(corrplot)
+<span style="color:#a6e22e">library</span>(ggplot2)
+
+correlation <span style="color:#f92672">=</span> fj[1<span style="color:#f92672">:</span><span style="color:#ae81ff">6</span>]
+cormat <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">round</span>(<span style="color:#a6e22e">cor</span>(correlation),<span style="color:#ae81ff">2</span>)
+
+<span style="color:#a6e22e">library</span>(reshape2)
+melted_cormat <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">melt</span>(cormat)
+
+
+get_lower_tri<span style="color:#f92672">&lt;-</span><span style="color:#a6e22e">function</span>(cormat){
+cormat<span style="color:#a6e22e">[upper.tri</span>(cormat)] <span style="color:#f92672">&lt;-</span> <span style="color:#66d9ef">NA</span>
+<span style="color:#a6e22e">return</span>(cormat)
+}
+
+get_upper_tri <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">function</span>(cormat){
+cormat<span style="color:#a6e22e">[lower.tri</span>(cormat)]<span style="color:#f92672">&lt;-</span> <span style="color:#66d9ef">NA</span>
+<span style="color:#a6e22e">return</span>(cormat)
+}
+
+upper_tri <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">get_upper_tri</span>(cormat)
+
+
+melted_cormat <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">melt</span>(upper_tri, na.rm <span style="color:#f92672">=</span> <span style="color:#66d9ef">TRUE</span>)
+
+ggheatmap <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">ggplot</span>(melted_cormat, <span style="color:#a6e22e">aes</span>(Var2, Var1, fill <span style="color:#f92672">=</span> value))<span style="color:#f92672">+</span>
+    <span style="color:#a6e22e">geom_tile</span>(color <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;white&#34;</span>)<span style="color:#f92672">+</span>
+    <span style="color:#a6e22e">scale_fill_gradient2</span>(low <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;blue&#34;</span>, high <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;red&#34;</span>, mid <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;white&#34;</span>, 
+                         midpoint <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>, limit <span style="color:#f92672">=</span> <span style="color:#a6e22e">c</span>(<span style="color:#ae81ff">-1</span>,<span style="color:#ae81ff">1</span>), space <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;Lab&#34;</span>, 
+                         name<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Pearson\nCorrelation&#34;</span>) <span style="color:#f92672">+</span>
+    <span style="color:#a6e22e">theme_minimal</span>()<span style="color:#f92672">+</span> <span style="color:#75715e"># minimal theme</span>
+    <span style="color:#a6e22e">theme</span>(axis.text.x <span style="color:#f92672">=</span> <span style="color:#a6e22e">element_text</span>(angle <span style="color:#f92672">=</span> <span style="color:#ae81ff">45</span>, vjust <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>, 
+                                     size <span style="color:#f92672">=</span> <span style="color:#ae81ff">12</span>, hjust <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>))<span style="color:#f92672">+</span>
+    <span style="color:#a6e22e">coord_fixed</span>()
+
+
+ggheatmap <span style="color:#f92672">+</span> 
+    <span style="color:#a6e22e">geom_text</span>(<span style="color:#a6e22e">aes</span>(Var2, Var1, label <span style="color:#f92672">=</span> value), color <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;black&#34;</span>, size <span style="color:#f92672">=</span> <span style="color:#ae81ff">4</span>) <span style="color:#f92672">+</span>
+    <span style="color:#a6e22e">theme</span>(
+        axis.title.x <span style="color:#f92672">=</span> <span style="color:#a6e22e">element_blank</span>(),
+        axis.title.y <span style="color:#f92672">=</span> <span style="color:#a6e22e">element_blank</span>(),
+        panel.grid.major <span style="color:#f92672">=</span> <span style="color:#a6e22e">element_blank</span>(),
+        panel.border <span style="color:#f92672">=</span> <span style="color:#a6e22e">element_blank</span>(),
+        panel.background <span style="color:#f92672">=</span> <span style="color:#a6e22e">element_blank</span>(),
+        axis.ticks <span style="color:#f92672">=</span> <span style="color:#a6e22e">element_blank</span>(),
+        legend.justification <span style="color:#f92672">=</span> <span style="color:#a6e22e">c</span>(<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">0</span>),
+        legend.position <span style="color:#f92672">=</span> <span style="color:#a6e22e">c</span>(<span style="color:#ae81ff">0.6</span>, <span style="color:#ae81ff">0.7</span>),
+        legend.direction <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;horizontal&#34;</span>)<span style="color:#f92672">+</span>
+    <span style="color:#a6e22e">guides</span>(fill <span style="color:#f92672">=</span> <span style="color:#a6e22e">guide_colorbar</span>(barwidth <span style="color:#f92672">=</span> <span style="color:#ae81ff">7</span>, barheight <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>,
+                                 title.position <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;top&#34;</span>, title.hjust <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.5</span>))
+</code></pre></div><p><!-- raw HTML omitted --></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r"><span style="color:#75715e">#Produces Pearson correlation map to easily view the correlation between all numberic variable.</span>
+</code></pre></div><p>There are some trends shown on the Pearson correlation graph. There is a small positive correlation between the number of deaths due to crahses and deaths due to housefires. There is another positive correlation between property damage and the year. Additionally, there is a negative correlation between the number of house fire deaths and the year which could support the idea that safety features on technology and appliances has increased to prevent fires.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r">fj <span style="color:#f92672">%&gt;%</span> <span style="color:#a6e22e">ggplot</span>(<span style="color:#a6e22e">aes</span>(x <span style="color:#f92672">=</span> Prevalent_Cause, y <span style="color:#f92672">=</span> Property_Damage, fill <span style="color:#f92672">=</span> Prevalent_Cause, 
+    color <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;black&#34;</span>)) <span style="color:#f92672">+</span> <span style="color:#a6e22e">geom_boxplot</span>() <span style="color:#f92672">+</span> <span style="color:#a6e22e">theme</span>(legend.position <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;bottom&#34;</span>) <span style="color:#f92672">+</span> 
+    <span style="color:#a6e22e">ggtitle</span>(<span style="color:#e6db74">&#34;Distribution of Property Damage Cost in U.S. Billions by Fire Type&#34;</span>)
+</code></pre></div><p><!-- raw HTML omitted --></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r"><span style="color:#75715e"># Boxplots</span>
+</code></pre></div><p>Boxplots comparing trends in property damage as categorized by type of fire. There are three outliers for the amount of property damage, two of which fall under cooking which could skew the data. Flammables caused the least amount of propery damage expenses while all other categories are failry similar in costs.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r"><span style="color:#a6e22e">ggplot</span>(housefires, <span style="color:#a6e22e">aes</span>(x <span style="color:#f92672">=</span> Year, y <span style="color:#f92672">=</span> Property_Damage, color <span style="color:#f92672">=</span> Category)) <span style="color:#f92672">+</span> 
+    <span style="color:#a6e22e">geom_point</span>(size <span style="color:#f92672">=</span> <span style="color:#ae81ff">3</span>, alpha <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.5</span>) <span style="color:#f92672">+</span> <span style="color:#a6e22e">geom_line</span>() <span style="color:#f92672">+</span> <span style="color:#a6e22e">theme</span>(legend.position <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;bottom&#34;</span>) <span style="color:#f92672">+</span> 
+    <span style="color:#a6e22e">ggtitle</span>(<span style="color:#e6db74">&#34;Property Damage by Year&#34;</span>) <span style="color:#f92672">+</span> <span style="color:#a6e22e">xlab</span>(<span style="color:#e6db74">&#34;Year&#34;</span>) <span style="color:#f92672">+</span> <span style="color:#a6e22e">ylab</span>(<span style="color:#e6db74">&#34;Reported Property Damage (billions)&#34;</span>) <span style="color:#f92672">+</span> 
+    <span style="color:#a6e22e">scale_y_continuous</span>(breaks <span style="color:#f92672">=</span> <span style="color:#a6e22e">seq</span>(<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">45</span>, <span style="color:#ae81ff">5</span>)) <span style="color:#f92672">+</span> <span style="color:#a6e22e">stat_summary</span>(fun <span style="color:#f92672">=</span> mean, 
+    color <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;black&#34;</span>, size <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.5</span>)
+</code></pre></div><p><!-- raw HTML omitted --></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r"><span style="color:#75715e"># Point plot</span>
+</code></pre></div><p>A different way of showing property damage trends throughout the years, but instead, categorized by high and low amounts of deaths. There have been a lower amount of house fire deaths from 2000 onward.This graph also shows that property damage has steadily increased over the years. This could be due to inflation in the US Economy.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r"><span style="color:#a6e22e">library</span>(cluster)
+<span style="color:#a6e22e">library</span>(factoextra)
+
+<span style="color:#a6e22e">library</span>(ggplot2)
+<span style="color:#a6e22e">library</span>(ggfortify)
+
+fjnumbers <span style="color:#f92672">&lt;-</span> fj[<span style="color:#f92672">-</span><span style="color:#a6e22e">c</span>(<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">7</span>)]
+pamfj <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">pam</span>(fjnumbers, <span style="color:#ae81ff">3</span>, keep.diss <span style="color:#f92672">=</span> <span style="color:#66d9ef">TRUE</span>)
+<span style="color:#a6e22e">plot</span>(pamfj)
+</code></pre></div><p><!-- raw HTML omitted --><!-- raw HTML omitted -->
+#k clusters/PAM, graphs</p>
+<p>*Three clusters is best because it is most uniformly grouped. The silhouette graphs help measure how close each point in one cluster is to points in the neighboring clusters. A trong structure is found between 0.71 to 1.00. A reasonable structure lies between 0.51 to 0.70. A weak structure is about 0.26 to 0.50. There is no substantial structure if between -1 to 0.25.In this case, two clusters have a reasonable structure with values of 0.54 while the third has a weak structre with a value of 0.35.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-r" data-lang="r"><span style="color:#a6e22e">autoplot</span>(<span style="color:#a6e22e">pam</span>(fjnumbers, <span style="color:#ae81ff">3</span>), frame <span style="color:#f92672">=</span> <span style="color:#66d9ef">TRUE</span>, frame.type <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;norm&#34;</span>)
+</code></pre></div><p><!-- raw HTML omitted --></p>
+
+            
+        <hr>         <div class="related-posts">
+                <h5>Related Posts</h5>
+                
+              </div> 
+            </div>
+          </div>
+
+   <hr>  <div class="disqus">
+  <div id="disqus_thread"></div>
+  <script type="text/javascript">
+
+    (function() {
+      
+      
+      if (window.location.hostname == "localhost")
+        return;
+
+      var disqus_shortname = '';
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  <a href="http://disqus.com/" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div> 
+        </div>
+      </div>
+    </div>
+
+    
+    <footer>
+  <div id="footer">
+    <div class="container">
+      <p class="text-muted">&copy; All rights reserved. Powered by <a href="https://gohugo.io/">Hugo</a> and
+      <a href="http://www.github.com/nurlansu/hugo-sustain/">sustain</a> with ♥</p>
+    </div>
+  </div>
+</footer>
+<div class="footer"></div>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<script src="../../js/docs.min.js"></script>
+<script src="../../js/main.js"></script>
+
+<script src="../../js/ie10-viewport-bug-workaround.js"></script>
+
+
+    
+  </body>
+</html>

@@ -29,11 +29,20 @@ Recently in class, we have been using Python to explore essential packages such 
     
     <item>
       <title>Project 1: Exploratory Data Analysis</title>
-      <link>/project/project1/</link>
+      <link>/project/project1.knit/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>/project/project1/</guid>
-      <description>Madelyn Oliveri mmo698, Project 1 *In this study I will be comparing motor vehicle data alongside U.S civilian house fire data; in-particular, examining trends in the number of deaths over the years from each type of accident, with the common variable being the year (1960-2018). Motor vehicle accident data was collected from the Bureau of Transportation Statistics which includes motorcycles while excluding commercial vehicles. It includes the number of crashes, the total number of deaths (presented as Deaths.</description>
+      <guid>/project/project1.knit/</guid>
+      <description>In this study I will be comparing motor vehicle data alongside U.S civilian house fire data; in-particular, examining trends in the number of deaths over the years from each type of accident, with the common variable being the year (1960-2018). Motor vehicle accident data was collected from the Bureau of Transportation Statistics which includes motorcycles while excluding commercial vehicles. It includes the number of crashes, the total number of deaths (presented as Deaths.</description>
+    </item>
+    
+    <item>
+      <title>Project 1: Exploratory Data Analysis</title>
+      <link>/project/project1.utf8/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/project/project1.utf8/</guid>
+      <description>In this study I will be comparing motor vehicle data alongside U.S civilian house fire data; in-particular, examining trends in the number of deaths over the years from each type of accident, with the common variable being the year (1960-2018). Motor vehicle accident data was collected from the Bureau of Transportation Statistics which includes motorcycles while excluding commercial vehicles. It includes the number of crashes, the total number of deaths (presented as Deaths.</description>
     </item>
     
     <item>
